@@ -128,5 +128,5 @@ pids
 # TernJS port file
 .tern-port
 
-# VSCode settings
+# VS Code settings
 .vscode/settings.json
