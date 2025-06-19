@@ -1,5 +1,7 @@
-import 'package:component_creator/component_creator.dart' as component_creator;
+import 'package:component_creator/tool/component_creator.dart' as tool;
 
-void main(List<String> arguments) {
-  print('Hello world: ${component_creator.calculate()}!');
+void main(List<String> args) {
+  final creator = tool.ComponentCreator();
+
+  creator.run(args);
 }
