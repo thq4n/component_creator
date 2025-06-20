@@ -180,8 +180,8 @@ class ComponentCreator {
 
     final extensionsContent = match.group(1)!;
 
-    // Tạo tên instance extension mới, ví dụ DSMyComponentThemeExt -> DSMyComponentThemeExtension()
-    final extInstanceName = '${className}Extension()';
+    // Tạo tên instance extension mới, ví dụ DSMyComponentThemeExtension -> DSMyComponentThemeExtension()
+    final extInstanceName = '${className}ThemeExtension()';
 
     // Kiểm tra xem đã có chưa
     if (extensionsContent.contains(extInstanceName)) {

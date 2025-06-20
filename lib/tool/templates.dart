@@ -59,20 +59,20 @@ enum ${className}Variants {
   // TODO: Define variants for $className component
 }
 
-class ${className}ThemeExt extends ThemeExtension<${className}ThemeExt> {
+class ${className}ThemeExtension extends ThemeExtension<${className}ThemeExtension> {
   final ${className}Theme ${className.camelCase}Theme = ${className}Theme();
 
   @override
-  ThemeExtension<${className}ThemeExt> copyWith() {
-    return ${className}ThemeExt();
+  ThemeExtension<${className}ThemeExtension> copyWith() {
+    return ${className}ThemeExtension();
   }
 
   @override
-  ThemeExtension<${className}ThemeExt> lerp(
-    covariant ThemeExtension<${className}ThemeExt>? other,
+  ThemeExtension<${className}ThemeExtension> lerp(
+    covariant ThemeExtension<${className}ThemeExtension>? other,
     double t,
   ) {
-    return ${className}ThemeExt();
+    return ${className}ThemeExtension();
   }
 }
 ''';
