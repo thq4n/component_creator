@@ -52,7 +52,7 @@ void main() {
           contains('class _DSButtonState extends DSStateBase<DSButton>'),
         );
         expect(template, contains('late DSButtonTheme componentTheme'));
-        expect(template, contains('theme.extension<DSButtonThemeExt>()'));
+        expect(template, contains('theme.extension<DSButtonThemeExtension>()'));
         expect(template, contains('Widget build(BuildContext context)'));
         expect(template, contains('return Container();'));
       });
@@ -82,7 +82,10 @@ void main() {
           ),
         );
         expect(template, contains('late DSCustomCardTheme componentTheme'));
-        expect(template, contains('theme.extension<DSCustomCardThemeExt>()'));
+        expect(
+          template,
+          contains('theme.extension<DSCustomCardThemeExtension>()'),
+        );
       });
     });
 
@@ -119,7 +122,7 @@ void main() {
         expect(
           content,
           contains(
-            'class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt>',
+            'class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExtension>',
           ),
         );
         expect(
@@ -136,7 +139,7 @@ void main() {
         expect(
           content,
           contains(
-            'class DSCustomCardThemeExt extends ThemeExtension<DSCustomCardThemeExt>',
+            'class DSCustomCardThemeExt extends ThemeExtension<DSCustomCardThemeExtension>',
           ),
         );
         expect(

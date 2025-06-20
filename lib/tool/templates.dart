@@ -18,7 +18,7 @@ class $className extends StatefulWidget {
 
 class _${className}State extends DSStateBase<$className> {
   late ${className}Theme componentTheme =
-      theme.extension<${className}ThemeExt>()!.${className.camelCase}Theme;
+      theme.extension<${className}ThemeExtension>()!.${className.camelCase}Theme;
 
   @override
   Widget build(BuildContext context) {
