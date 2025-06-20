@@ -13,6 +13,114 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for different naming conventions
 - Add interactive component creation wizard
 
+## [0.0.5] - 2025-06-20
+
+### Fixed
+- **StatefulWidget Template Bug**: Fixed incorrect theme extension reference in StatefulWidget template
+- **Template Consistency**: Updated StatefulWidget template to use consistent theme extension naming
+- **Test Coverage**: Updated test cases to reflect the corrected template naming
+
+### Bug Fixes
+- **Theme Extension Reference**: Fixed StatefulWidget template to use `${className}ThemeExtension` instead of `${className}ThemeExt`
+- **Generated Code Consistency**: Ensured all generated components use consistent theme extension naming
+- **Template Alignment**: Aligned StatefulWidget template with theme extension naming conventions
+
+### Technical Details
+- **Template Update**: Updated `statefulWidget()` method in `Templates` class to use correct theme extension reference
+- **Test Updates**: Updated test cases in `component_creator_test.dart` to verify correct template generation
+- **Consistency Fix**: Ensured StatefulWidget template matches theme extension naming pattern
+
+### Generated Files
+For each component, the tool now generates:
+1. **Component Widget**: `lib/components/ds_{component_name}/ds_{component_name}.dart` (with correct theme extension reference)
+2. **Theme Class**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.dart`
+3. **Theme Extension**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart` (with consistent naming)
+4. **Theme Integration**: Updates `lib/theme/ds_theme.dart` with part directives
+5. **App Theme Integration**: Updates `lib/theme/base/app_theme/ds_app_theme.dart` with properly formatted extensions
+
+### Example Generated Component
+```dart
+import '../../theme/ds_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:design_system_project/base/ds_base.dart';
+
+class DSButton extends StatefulWidget {
+  final DSButtonVariants variant;
+  const DSButton({super.key, this.variant = DSButtonVariants.primary});
+
+  @override
+  State<DSButton> createState() => _DSButtonState();
+}
+
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme; // Fixed reference
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+```
+
+### Example Generated Theme Extension
+```dart
+part of '../../ds_theme.dart';
+
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+  // TODO: Define variants for DSButton component
+}
+
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
+  }
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
+    double t,
+  ) {
+    return DSButtonThemeExtension();
+  }
+}
+```
+
+### Usage Examples
+```bash
+# Interactive mode
+component_creator
+
+# Direct mode
+component_creator Button
+component_creator "Custom Card"
+component_creator MyAwesomeWidget
+```
+
+### Breaking Changes
+- None (bug fix only)
+
+### Known Issues
+- Limited to StatefulWidget components only
+- No support for custom template customization
+- Error messages are in Vietnamese only
+- No validation for component name format
+
+### Future Enhancements
+- Support for StatelessWidget components
+- Custom template configuration
+- Internationalization for error messages
+- Component name validation and suggestions
+- Interactive component creation wizard
+- Integration with popular IDEs
+
 ## [0.0.4] - 2025-06-20
 
 ### Changed
@@ -418,9 +526,15 @@ dart pub global activate component_creator
 
 ## Version History
 
-### Version 0.0.4
+### Version 0.0.5
 - **Release Date**: 2025-06-20
 - **Status**: Latest release
+- **Features**: Bug fix for StatefulWidget template, template consistency, improved test coverage
+- **Target**: Flutter developers using design systems with consistent naming conventions
+
+### Version 0.0.4
+- **Release Date**: 2025-06-20
+- **Status**: Previous release
 - **Features**: Theme extension naming consistency, improved class names, enhanced instance names
 - **Target**: Flutter developers using design systems with consistent naming conventions
 
@@ -461,6 +575,38 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## Release Notes
+
+### Version 0.0.5 Release Notes
+
+**What's New:**
+- 🐛 **StatefulWidget Template Bug Fix**: Fixed incorrect theme extension reference in StatefulWidget template
+- 🔧 **Template Consistency**: Updated StatefulWidget template to use consistent theme extension naming
+- ✅ **Test Coverage**: Updated test cases to reflect the corrected template naming
+
+**Getting Started:**
+1. Install the tool: `dart pub global activate component_creator`
+2. Create your first component: `component_creator Button`
+3. Use the generated component with correct theme extension references
+4. Customize the generated code as needed
+
+**Bug Fixes:**
+- **Theme Extension Reference**: Fixed StatefulWidget template to use `${className}ThemeExtension` instead of `${className}ThemeExt`
+- **Generated Code Consistency**: Ensured all generated components use consistent theme extension naming
+- **Template Alignment**: Aligned StatefulWidget template with theme extension naming conventions
+
+**Technical Improvements:**
+- **Template Update**: Updated `statefulWidget()` method in `Templates` class to use correct theme extension reference
+- **Test Updates**: Updated test cases in `component_creator_test.dart` to verify correct template generation
+- **Consistency Fix**: Ensured StatefulWidget template matches theme extension naming pattern
+
+**Breaking Changes:**
+- None (bug fix only)
+
+**Next Steps:**
+- Add StatelessWidget support
+- Implement custom templates
+- Add internationalization
+- Create interactive wizard
 
 ### Version 0.0.4 Release Notes
 

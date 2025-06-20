@@ -140,7 +140,7 @@ Static class containing all template strings for generating different file types
 
 #### statefulWidget(String className, String snakeFileName)
 
-Generates the template for a StatefulWidget component with automatic variant parameter.
+Generates the template for a StatefulWidget component with automatic variant parameter and correct theme extension reference.
 
 **Parameters:**
 - `className` - The PascalCase class name (e.g., "DSButton")
@@ -153,12 +153,13 @@ Generates the template for a StatefulWidget component with automatic variant par
 - Proper imports for theme and Flutter
 - StatefulWidget class definition with automatic variant parameter
 - State class extending DSStateBase
-- Theme integration setup with consistent naming
+- Theme integration setup with consistent naming and correct theme extension reference
 - Basic build method structure
 
-**New in v0.0.4:**
-- **Consistent Theme Extension Naming**: Uses `${className}ThemeExtension` for consistent naming
-- **Improved Code Readability**: Better naming makes the generated code more intuitive and maintainable
+**New in v0.0.5:**
+- **Fixed Theme Extension Reference**: StatefulWidget template now uses `${className}ThemeExtension` instead of `${className}ThemeExt`
+- **Template Consistency**: All templates now use consistent theme extension naming
+- **Improved Test Coverage**: Updated test cases to verify correct template generation
 
 #### themeFileContent(String className)
 
@@ -406,7 +407,7 @@ String className = componentName.pascalCase; // "MyAwesomeButton"
 String kebabName = componentName.kebabCase; // "my-awesome-button"
 ```
 
-### Component Variants Usage (v0.0.4+)
+### Component Variants Usage (v0.0.5+)
 
 ```dart
 // Generated enum in theme extension with default variants
@@ -430,10 +431,10 @@ class DSButton extends StatefulWidget {
   // ... rest of implementation
 }
 
-// Usage in state class with consistent theme extension naming
+// Usage in state class with consistent theme extension naming (v0.0.5+)
 class _DSButtonState extends DSStateBase<DSButton> {
   late DSButtonTheme componentTheme =
-      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme; // Fixed reference
   
   // ... rest of implementation
 }
@@ -455,6 +456,17 @@ class DSAppTheme {
   }
 }
 ```
+
+### Bug Fixes in v0.0.5
+
+#### StatefulWidget Template Fix
+- **Before (v0.0.4 and earlier)**: Template used `${className}ThemeExt` in theme extension reference
+- **After (v0.0.5+)**: Template now uses `${className}ThemeExtension` for consistency
+
+#### Template Consistency
+- **Fixed Reference**: StatefulWidget template now correctly references theme extensions
+- **Test Updates**: Updated test cases to verify correct template generation
+- **Consistency**: All templates now use the same naming pattern
 
 ### Breaking Changes in v0.0.4
 

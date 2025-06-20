@@ -6,10 +6,11 @@ A quick reference guide for the Component Creator tool with all essential comman
 
 - [Installation](#installation)
 - [Basic Commands](#basic-commands)
-- [Component Variants (v0.0.4+)](#component-variants-v004)
+- [Component Variants (v0.0.5+)](#component-variants-v005)
 - [Generated Files](#generated-files)
 - [Naming Conventions](#naming-conventions)
 - [Breaking Changes (v0.0.4)](#breaking-changes-v004)
+- [Bug Fixes (v0.0.5)](#bug-fixes-v005)
 - [Troubleshooting](#troubleshooting)
 
 ## Installation
@@ -45,7 +46,7 @@ component_creator MyAwesomeWidget
 component_creator --help
 ```
 
-## Component Variants (v0.0.4+)
+## Component Variants (v0.0.5+)
 
 ### Generated Enum with Default Variants
 ```dart
@@ -74,6 +75,19 @@ class DSButton extends StatefulWidget {
 class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
   final DSButtonTheme dSButtonTheme = DSButtonTheme();
   // ... implementation
+}
+```
+
+### Correct Template References (v0.0.5+)
+```dart
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
 }
 ```
 
@@ -190,7 +204,7 @@ class _DSButtonState extends DSStateBase<DSButton> {
 }
 ```
 
-### Theme Extension Template (v0.0.4+)
+### Theme Extension Template (v0.0.5+)
 ```dart
 part of '../../ds_theme.dart';
 
@@ -332,6 +346,27 @@ If you have existing components generated with previous versions:
    component_creator Button
    ```
 
+## Bug Fixes (v0.0.5)
+
+### StatefulWidget Template Fix
+- **Issue**: Template used `${className}ThemeExt` instead of `${className}ThemeExtension`
+- **Fix**: Updated template to use correct theme extension reference
+- **Impact**: Generated components now have correct theme extension references
+
+### Template Consistency
+- **Fixed**: All templates now use consistent theme extension naming
+- **Improved**: Test coverage for correct template generation
+- **Enhanced**: Generated code consistency across all components
+
+### Before vs After
+```dart
+// Before (v0.0.4 and earlier)
+theme.extension<DSButtonThemeExt>()!.dSButtonTheme; // Incorrect
+
+// After (v0.0.5+)
+theme.extension<DSButtonThemeExtension>()!.dSButtonTheme; // Fixed
+```
+
 ## Troubleshooting
 
 ### Common Error Messages
@@ -343,6 +378,7 @@ If you have existing components generated with previous versions:
 | "Lỗi khi format code" | Install dart_style: `dart pub global activate dart_style` |
 | "Lỗi khi tạo component" | Check file permissions and dependencies |
 | Naming inconsistency errors | Follow migration guide for v0.0.4 |
+| Theme extension reference errors | Regenerate components with v0.0.5+ |
 
 ### Quick Fixes
 
@@ -361,6 +397,11 @@ dart pub get
 rm -rf lib/components/ds_button
 rm -rf lib/theme/components/ds_button
 component_creator Button
+
+# Fix template references (v0.0.4 and earlier)
+rm -rf lib/components/ds_button
+rm -rf lib/theme/components/ds_button
+component_creator Button
 ```
 
 ### Required Dependencies
@@ -373,7 +414,12 @@ dependencies:
 
 ## Version History
 
-### Version 0.0.4 (Current)
+### Version 0.0.5 (Current)
+- 🐛 **StatefulWidget Template Bug Fix**: Fixed incorrect theme extension reference in StatefulWidget template
+- 🔧 **Template Consistency**: Updated StatefulWidget template to use consistent theme extension naming
+- ✅ **Test Coverage**: Updated test cases to reflect the corrected template naming
+
+### Version 0.0.4
 - 🎯 **Theme Extension Naming Consistency**: Refactored theme extension class and instance naming for better consistency
 - 📝 **Improved Class Names**: Changed theme extension class from `${className}ThemeExt` to `${className}ThemeExtension`
 - 🔧 **Enhanced Instance Names**: Updated instance names from `${className}Extension()` to `${className}ThemeExtension()`
@@ -427,8 +473,14 @@ dependencies:
 
 ### 6. Migration Strategy
 - When upgrading to v0.0.4+, follow the migration guide
+- When upgrading to v0.0.5+, regenerate components for correct template references
 - Test components after migration
 - Update any custom code that references old naming
+
+### 7. Template Consistency
+- Use the latest version of the tool for consistent template generation
+- Regenerate components when upgrading to get the latest template fixes
+- Verify theme extension references in generated components
 
 ## Quick Commands Reference
 
@@ -457,17 +509,22 @@ dart pub get
 rm -rf lib/components/ds_button
 rm -rf lib/theme/components/ds_button
 component_creator Button
+
+# Fix template references (v0.0.4 and earlier)
+rm -rf lib/components/ds_button
+rm -rf lib/theme/components/ds_button
+component_creator Button
 ```
 
 ## File Templates Summary
 
 ### Component Widget
 - StatefulWidget with theme integration
-- Automatic variant parameter (v0.0.4+)
+- Automatic variant parameter (v0.0.5+)
 - DSStateBase extension
-- Theme extension access with consistent naming
+- Theme extension access with consistent naming and correct references
 
-### Theme Extension (v0.0.4+)
+### Theme Extension (v0.0.5+)
 - Component variants enum with defaults
 - ThemeExtension implementation with consistent naming
 - copyWith and lerp methods
@@ -492,4 +549,4 @@ component_creator Button
 
 ---
 
-*This quick reference covers all essential aspects of using the Component Creator tool with component variants support, automatic variant parameters, and consistent naming conventions.* 
+*This quick reference covers all essential aspects of using the Component Creator tool with component variants support, automatic variant parameters, consistent naming conventions, and the latest bug fixes for template consistency.* 

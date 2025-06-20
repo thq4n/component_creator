@@ -19,6 +19,7 @@ A powerful CLI tool for automatically generating Flutter components with integra
 - 📚 **Comprehensive Documentation**: Detailed guides and API documentation
 - ⚡ **Smart Defaults**: Components come with automatic variant parameters and default variants
 - 🎯 **Consistent Naming**: Theme extension classes follow consistent naming conventions
+- ✅ **Template Consistency**: All templates use consistent theme extension references
 
 ## 🚀 Quick Start
 
@@ -60,9 +61,9 @@ lib/
             └── ds_button_theme.ext.dart # Theme extension with default variants
 ```
 
-## 🎨 Component Variants (v0.0.4+)
+## 🎨 Component Variants (v0.0.5+)
 
-Starting from version 0.0.4, each component automatically includes variants support with smart defaults and consistent naming:
+Starting from version 0.0.5, each component automatically includes variants support with smart defaults and consistent naming:
 
 ```dart
 // Generated component with automatic variant parameter
@@ -98,6 +99,7 @@ class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
 - **Smart Defaults**: Components come with common variants pre-defined
 - **Automatic Integration**: Variant parameter automatically included in generated components
 - **Consistent Naming**: Theme extension classes follow clear naming conventions
+- **Template Consistency**: All templates use consistent theme extension references
 
 ## 📖 Documentation
 
@@ -402,7 +404,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Version History
 
-### Version 0.0.4 (Current)
+### Version 0.0.5 (Current)
+- 🐛 **StatefulWidget Template Bug Fix**: Fixed incorrect theme extension reference in StatefulWidget template
+- 🔧 **Template Consistency**: Updated StatefulWidget template to use consistent theme extension naming
+- ✅ **Test Coverage**: Updated test cases to reflect the corrected template naming
+
+### Version 0.0.4
 - 🎯 **Theme Extension Naming Consistency**: Refactored theme extension class and instance naming for better consistency
 - 📝 **Improved Class Names**: Changed theme extension class from `${className}ThemeExt` to `${className}ThemeExtension`
 - 🔧 **Enhanced Instance Names**: Updated instance names from `${className}Extension()` to `${className}ThemeExtension()`

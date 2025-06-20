@@ -8,10 +8,11 @@ This guide provides step-by-step instructions for using the Component Creator to
 - [Quick Start](#quick-start)
 - [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
-- [Component Variants (v0.0.4+)](#component-variants-v004)
+- [Component Variants (v0.0.5+)](#component-variants-v005)
 - [Generated Files](#generated-files)
 - [Customization](#customization)
 - [Breaking Changes (v0.0.4)](#breaking-changes-v004)
+- [Bug Fixes (v0.0.5)](#bug-fixes-v005)
 - [Troubleshooting](#troubleshooting)
 
 ## Installation
@@ -150,11 +151,11 @@ class DSAppTheme {
 }
 ```
 
-## Component Variants (v0.0.4+)
+## Component Variants (v0.0.5+)
 
 ### Overview
 
-Starting from version 0.0.4, the tool automatically generates component variants support with smart defaults and consistent naming. Each component now includes a variants enum with common variants pre-defined, an automatic variant parameter, and consistent theme extension naming.
+Starting from version 0.0.5, the tool automatically generates component variants support with smart defaults and consistent naming. Each component now includes a variants enum with common variants pre-defined, an automatic variant parameter, consistent theme extension naming, and correct template references.
 
 ### Generated Variants Enum
 
@@ -196,6 +197,23 @@ class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
   final DSButtonTheme dSButtonTheme = DSButtonTheme();
   
   // ... implementation
+}
+```
+
+### Correct Template References (v0.0.5+)
+
+The StatefulWidget template now correctly references theme extensions:
+
+```dart
+// Generated component with correct theme extension reference
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme; // Fixed reference
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
 }
 ```
 
@@ -296,6 +314,7 @@ class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
 - **Smart Defaults**: Components come with common variants pre-defined
 - **Automatic Integration**: Variant parameter automatically included in generated components
 - **Consistent Naming**: Theme extension classes follow clear naming conventions
+- **Template Consistency**: All templates use consistent theme extension references
 
 ## Generated Files
 
@@ -305,7 +324,7 @@ For each component, the tool generates the following files:
 
 **Location**: `lib/components/ds_{component_name}/ds_{component_name}.dart`
 
-**Content**: StatefulWidget with theme integration, automatic variant parameter, and consistent naming
+**Content**: StatefulWidget with theme integration, automatic variant parameter, consistent naming, and correct theme extension reference
 
 ```dart
 import '../../theme/ds_theme.dart';
@@ -345,7 +364,7 @@ class DSButtonTheme {
 }
 ```
 
-### 3. Theme Extension (v0.0.4+)
+### 3. Theme Extension (v0.0.5+)
 
 **Location**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart`
 
@@ -562,6 +581,47 @@ If you have existing components generated with previous versions:
 - **Maintainability**: Easier to understand and maintain
 - **Future-proof**: Better foundation for future enhancements
 
+## Bug Fixes (v0.0.5)
+
+### StatefulWidget Template Fix
+
+**Issue**: The StatefulWidget template was using the old theme extension naming convention.
+
+**Before (v0.0.4 and earlier):**
+```dart
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExt>()!.dSButtonTheme; // Incorrect reference
+}
+```
+
+**After (v0.0.5+):**
+```dart
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme; // Fixed reference
+}
+```
+
+### Template Consistency
+
+**Fixed Issues:**
+- **Theme Extension Reference**: StatefulWidget template now correctly references theme extensions
+- **Generated Code Consistency**: All generated components use consistent theme extension naming
+- **Template Alignment**: StatefulWidget template matches theme extension naming conventions
+
+**Technical Improvements:**
+- **Template Update**: Updated `statefulWidget()` method in `Templates` class to use correct theme extension reference
+- **Test Updates**: Updated test cases in `component_creator_test.dart` to verify correct template generation
+- **Consistency Fix**: Ensured StatefulWidget template matches theme extension naming pattern
+
+### Impact
+
+- **No Breaking Changes**: This is a bug fix that doesn't introduce breaking changes
+- **Improved Consistency**: All templates now use the same naming pattern
+- **Better Generated Code**: Generated components now have correct theme extension references
+- **Enhanced Test Coverage**: Test cases now verify correct template generation
+
 ## Troubleshooting
 
 ### Common Issues
@@ -613,6 +673,10 @@ dependencies:
 #### 5. Naming inconsistency errors
 
 **Solution**: If you're upgrading from v0.0.3 or earlier, follow the migration guide above to update your existing components.
+
+#### 6. Theme extension reference errors (v0.0.4 and earlier)
+
+**Solution**: If you have components generated with v0.0.4 or earlier, regenerate them with v0.0.5+ to get the correct theme extension references.
 
 ### Debug Mode
 
@@ -666,8 +730,15 @@ print('File path: ${file.path}');
 ### 6. Migration Strategy
 
 - When upgrading to v0.0.4+, follow the migration guide
+- When upgrading to v0.0.5+, regenerate components for correct template references
 - Test components after migration
 - Update any custom code that references old naming
+
+### 7. Template Consistency
+
+- Use the latest version of the tool for consistent template generation
+- Regenerate components when upgrading to get the latest template fixes
+- Verify theme extension references in generated components
 
 ## Examples
 
@@ -774,4 +845,4 @@ class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
 }
 ```
 
-This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with component variants support, automatic variant parameters, and consistent naming conventions. 
+This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with component variants support, automatic variant parameters, consistent naming conventions, and the latest bug fixes for template consistency. 
