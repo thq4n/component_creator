@@ -1,16 +1,16 @@
 # Quick Reference Guide
 
-A fast reference for common Component Creator commands, examples, and troubleshooting.
+A quick reference for the Component Creator tool with common commands, examples, and troubleshooting tips.
 
 ## 🚀 Quick Commands
 
 ### Installation
 ```bash
-# Install globally
+# Global installation
 dart pub global activate component_creator
 
-# Install from source
-git clone <repo-url>
+# From source
+git clone https://github.com/your-username/component_creator.git
 cd component_creator
 dart pub get
 dart pub global activate --source path .
@@ -27,98 +27,207 @@ component_creator "Custom Card"
 component_creator MyAwesomeWidget
 ```
 
-### Testing
+### Verification
 ```bash
-# Run tests
-dart test
+# Check if tool is installed
+component_creator --help
 
-# Run with coverage
-dart test --coverage=coverage
+# Test with a simple component
+component_creator Test
 ```
 
-## 📝 Common Examples
+## 📁 Generated File Structure
 
-### Create Basic Components
-```bash
-component_creator Button
-component_creator Card
-component_creator Input
-component_creator Avatar
-component_creator Modal
-```
+For a component named "Button":
 
-### Create Complex Components
-```bash
-component_creator "Custom Button"
-component_creator "Data Table"
-component_creator "User Profile Card"
-component_creator "Search Input"
-component_creator "Notification Badge"
-```
-
-### Batch Creation
-```bash
-# Create multiple components
-for component in Button Card Input Avatar; do
-  component_creator $component
-done
-```
-
-## 🔧 Generated File Structure
-
-For component "Button":
 ```
 lib/
 ├── components/
 │   └── ds_button/
-│       └── ds_button.dart              # Main widget
+│       └── ds_button.dart              # Main component widget
 └── theme/
-    ├── ds_theme.dart                   # Updated with parts
-    ├── base/app_theme/
-    │   └── ds_app_theme.dart           # Updated with extensions
+    ├── ds_theme.dart                   # Updated with new parts
+    ├── base/
+    │   └── app_theme/
+    │       └── ds_app_theme.dart       # Updated with extensions
     └── components/
         └── ds_button/
             ├── ds_button_theme.dart    # Theme class
-            └── ds_button_theme.ext.dart # Theme extension
+            └── ds_button_theme.ext.dart # Theme extension with variants
 ```
 
-## 📋 Naming Conventions
+## 🎨 Component Variants (v0.0.2+)
+
+### Generated Enum
+```dart
+// Automatically generated in theme extension
+enum DSButtonVariants {
+  // TODO: Define variants for DSButton component
+}
+```
+
+### Usage in Component
+```dart
+class DSButton extends StatefulWidget {
+  final DSButtonVariants variant;
+  
+  const DSButton({
+    super.key,
+    this.variant = DSButtonVariants.primary,
+  });
+  
+  // ... implementation
+}
+```
+
+### Common Variants
+```dart
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+  danger,
+  success,
+  warning,
+}
+```
+
+## 📝 Naming Conventions
 
 | Input | Component Class | File Name | Theme Class | Theme Extension |
 |-------|----------------|-----------|-------------|-----------------|
 | `Button` | `DSButton` | `ds_button.dart` | `DSButtonTheme` | `DSButtonThemeExt` |
 | `CustomCard` | `DSCustomCard` | `ds_custom_card.dart` | `DSCustomCardTheme` | `DSCustomCardThemeExt` |
-| `MyWidget` | `DSMyWidget` | `ds_my_widget.dart` | `DSMyWidgetTheme` | `DSMyWidgetThemeExt` |
+| `MyAwesomeWidget` | `DSMyAwesomeWidget` | `ds_my_awesome_widget.dart` | `DSMyAwesomeWidgetTheme` | `DSMyAwesomeWidgetThemeExt` |
 
-## 🛠️ String Utilities
+## 🔧 Common Customizations
 
-### Case Conversion
+### Theme Properties
 ```dart
-import 'package:component_creator/utils/string_utils.dart';
-
-// Convert to different cases
-'helloWorld'.snakeCase      // 'hello_world'
-'hello_world'.camelCase     // 'helloWorld'
-'hello_world'.pascalCase    // 'HelloWorld'
-'helloWorld'.kebabCase      // 'hello-world'
+class DSButtonTheme {
+  final Color primaryColor = Colors.blue;
+  final Color secondaryColor = Colors.grey;
+  final double borderRadius = 8.0;
+  final EdgeInsets padding = EdgeInsets.all(16.0);
+}
 ```
 
-### Examples
+### Component Implementation
 ```dart
-'MyAwesomeComponent'.snakeCase   // 'my_awesome_component'
-'my_awesome_component'.camelCase // 'myAwesomeComponent'
-'my_awesome_component'.pascalCase // 'MyAwesomeComponent'
-'MyAwesomeComponent'.kebabCase   // 'my-awesome-component'
+@override
+Widget build(BuildContext context) {
+  return Container(
+    padding: componentTheme.padding,
+    decoration: BoxDecoration(
+      color: componentTheme.backgroundColor,
+      borderRadius: BorderRadius.circular(componentTheme.borderRadius),
+    ),
+    child: child,
+  );
+}
 ```
 
-## 📄 Template Examples
-
-### Component Widget Template
+### Variant Styling
 ```dart
-import '../../theme/ds_theme.dart';
+ButtonStyle _getButtonStyle() {
+  switch (widget.variant) {
+    case DSButtonVariants.primary:
+      return ElevatedButton.styleFrom(
+        backgroundColor: componentTheme.primaryColor,
+      );
+    case DSButtonVariants.secondary:
+      return ElevatedButton.styleFrom(
+        backgroundColor: componentTheme.secondaryColor,
+      );
+    case DSButtonVariants.outline:
+      return OutlinedButton.styleFrom(
+        side: BorderSide(color: componentTheme.outlineColor),
+      );
+  }
+}
+```
+
+## 🐛 Troubleshooting
+
+### Common Error Messages
+
+| Error Message | Solution |
+|---------------|----------|
+| `File ds_app_theme.dart không tồn tại` | Create `lib/theme/base/app_theme/ds_app_theme.dart` |
+| `Lỗi khi format code` | Run `dart pub global activate dart_style` |
+| `Tên component không được để trống` | Provide a component name as argument |
+| Import errors | Add `design_system_project` dependency to `pubspec.yaml` |
+
+### Quick Fixes
+
+#### Missing App Theme File
+```bash
+mkdir -p lib/theme/base/app_theme
+touch lib/theme/base/app_theme/ds_app_theme.dart
+```
+
+Add content:
+```dart
 import 'package:flutter/material.dart';
-import 'package:design_system_project/base/ds_base.dart';
 
+class DSAppTheme {
+  static ThemeData get lightTheme {
+    return ThemeData(
+      extensions: [],
+    );
+  }
+}
+```
+
+#### Missing Dependencies
+```yaml
+# pubspec.yaml
+dependencies:
+  design_system_project:
+    path: ../design_system_project
+```
+
+#### Code Formatting Issues
+```bash
+dart pub global activate dart_style
+dart format lib
+```
+
+## 📋 Project Requirements
+
+### Required Files
+- `lib/theme/base/app_theme/ds_app_theme.dart` (must exist)
+- `lib/theme/ds_theme.dart` (created automatically)
+
+### Required Dependencies
+- Dart SDK >= 3.7.2
+- Flutter SDK
+- `design_system_project` package
+
+### Project Structure
+```
+your_flutter_project/
+├── lib/
+│   ├── components/           # Created automatically
+│   ├── theme/
+│   │   ├── components/       # Created automatically
+│   │   ├── base/
+│   │   │   └── app_theme/
+│   │   │       └── ds_app_theme.dart  # Required
+│   │   └── ds_theme.dart     # Created automatically
+│   └── main.dart
+```
+
+## 🎯 Examples
+
+### Basic Button Component
+```bash
+component_creator Button
+```
+
+Generated component:
+```dart
 class DSButton extends StatefulWidget {
   const DSButton({super.key});
 
@@ -137,18 +246,42 @@ class _DSButtonState extends DSStateBase<DSButton> {
 }
 ```
 
-### Theme Class Template
+### Component with Variants
 ```dart
-part of '../../ds_theme.dart';
+class DSButton extends StatefulWidget {
+  final String text;
+  final VoidCallback? onPressed;
+  final DSButtonVariants variant;
+  
+  const DSButton({
+    super.key,
+    required this.text,
+    this.onPressed,
+    this.variant = DSButtonVariants.primary,
+  });
 
-class DSButtonTheme {
-  // TODO: Define theme properties for DSButton component
+  @override
+  State<DSButton> createState() => _DSButtonState();
 }
 ```
 
-### Theme Extension Template
+### Theme Extension with Variants
 ```dart
 part of '../../ds_theme.dart';
+
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+}
+
+class DSButtonTheme {
+  final Color primaryColor = Colors.blue;
+  final Color secondaryColor = Colors.grey;
+  final Color outlineColor = Colors.blue;
+  final Color dangerColor = Colors.red;
+}
 
 class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
   final DSButtonTheme dSButtonTheme = DSButtonTheme();
@@ -168,193 +301,37 @@ class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
 }
 ```
 
-## 🐛 Common Issues & Solutions
+## 🔄 Version History
 
-### Issue: "File ds_app_theme.dart không tồn tại"
-**Solution:**
-```bash
-# Create required directory and file
-mkdir -p lib/theme/base/app_theme
-touch lib/theme/base/app_theme/ds_app_theme.dart
-```
+### v0.0.2 (Current)
+- ✨ Component variants support
+- 🎨 Enhanced theme extensions
+- 📝 Improved code organization
 
-**Basic ds_app_theme.dart content:**
-```dart
-import 'package:flutter/material.dart';
+### v0.0.1
+- 🎉 Initial release
+- 🚀 Basic component generation
+- 🔧 Theme integration
 
-class DSAppTheme {
-  final List<ThemeExtension> extensions;
-  
-  const DSAppTheme({
-    this.extensions = const [],
-  });
-}
-```
+## 📚 Additional Resources
 
-### Issue: "Lỗi khi format code"
-**Solution:**
-```bash
-# Check Dart installation
-which dart
+- **[Usage Guide](USAGE_GUIDE.md)**: Detailed step-by-step instructions
+- **[API Documentation](API.md)**: Complete API reference
+- **[Contributing Guide](CONTRIBUTING.md)**: How to contribute
+- **[Publishing Guide](PUBLISHING.md)**: How to publish updates
 
-# Try manual formatting
-dart format lib
+## 🆘 Getting Help
 
-# Install Dart if needed
-# Follow Dart installation guide
-```
-
-### Issue: "Tên component không được để trống"
-**Solution:**
-```bash
-# Provide component name
-component_creator Button
-
-# Or use interactive mode
-component_creator
-# Then enter: Button
-```
-
-### Issue: Generated files don't compile
-**Solution:**
-1. Check `pubspec.yaml` dependencies
-2. Run `flutter pub get`
-3. Verify import paths
-4. Check design system package configuration
-
-## 🔍 Debug Commands
-
-### Verbose Output
-```bash
-# Add debug prints to component_creator.dart
-print('Debug: Creating component: $className');
-print('Debug: Snake case name: $snakeName');
-```
-
-### Check File Structure
-```bash
-# Verify generated files
-ls -la lib/components/
-ls -la lib/theme/components/
-cat lib/theme/ds_theme.dart
-```
-
-### Test String Utilities
-```dart
-// Test case conversion
-print('Button'.snakeCase);        // ds_button
-print('CustomCard'.snakeCase);    // ds_custom_card
-print('MyWidget'.snakeCase);      // ds_my_widget
-```
-
-## 📚 File Locations
-
-### Source Files
-```
-component_creator/
-├── bin/component_creator.dart          # CLI entry point
-├── lib/tool/component_creator.dart     # Main logic
-├── lib/tool/templates.dart             # Templates
-├── lib/tool/file_utils.dart            # File utilities
-└── lib/utils/string_utils.dart         # String utilities
-```
-
-### Generated Files (in your Flutter project)
-```
-your_project/
-├── lib/components/                     # Component widgets
-├── lib/theme/ds_theme.dart             # Main theme file
-├── lib/theme/base/app_theme/           # App theme
-└── lib/theme/components/               # Component themes
-```
-
-## 🎯 Best Practices
-
-### Component Naming
-- Use **PascalCase** (e.g., `Button`, `CustomCard`)
-- Avoid special characters and spaces
-- Use descriptive, meaningful names
-- Keep names concise but clear
-
-### File Organization
-- Don't manually modify generated structure
-- Use the tool for all component creation
-- Keep components in designated directories
-- Maintain consistent naming patterns
-
-### Theme Integration
-- Define theme properties in generated theme class
-- Use `copyWith` and `lerp` methods properly
-- Follow design system guidelines
-- Test theme changes thoroughly
-
-### Code Quality
-- Add proper documentation to generated code
-- Follow Flutter best practices
-- Test components before using in production
-- Keep generated code up to date
-
-## 🔗 Useful Commands
-
-### Development
-```bash
-# Install dependencies
-dart pub get
-
-# Run tests
-dart test
-
-# Format code
-dart format .
-
-# Analyze code
-dart analyze
-```
-
-### Project Management
-```bash
-# Check version
-dart pub deps
-
-# Update dependencies
-dart pub upgrade
-
-# Clean build
-dart pub cache clean
-```
-
-### Git Integration
-```bash
-# Add generated files
-git add lib/components/ lib/theme/
-
-# Commit changes
-git commit -m "feat: add Button component"
-
-# Check status
-git status
-```
-
-## 📞 Getting Help
-
-### Documentation
-- **[Main README](../README.md)** - Project overview
-- **[Usage Guide](USAGE_GUIDE.md)** - Detailed instructions
-- **[API Documentation](API.md)** - Complete reference
-- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute
-
-### Community
-- **GitHub Issues** - Report bugs and request features
-- **GitHub Discussions** - Ask questions and share ideas
-- **Pull Requests** - Contribute code and documentation
-
-### Quick Links
-- [Installation Guide](../README.md#installation)
-- [Usage Examples](USAGE_GUIDE.md#examples)
-- [Troubleshooting](USAGE_GUIDE.md#troubleshooting)
-- [API Reference](API.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
+- Check error messages for specific guidance
+- Verify project structure matches requirements
+- Ensure all dependencies are installed
+- Open an issue on GitHub with detailed information
 
 ---
 
-*This quick reference guide provides fast access to common tasks. For detailed information, see the full documentation.* 
+**Quick Tips:**
+- Use descriptive component names
+- Keep generated files in their designated directories
+- Customize theme properties after generation
+- Define variants based on your design system needs
+- Test components before using in production 

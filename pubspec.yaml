@@ -1,6 +1,6 @@
 name: component_creator
 description: A powerful CLI tool for automatically generating Flutter components with integrated design system theming. Streamlines the process of creating new Flutter widgets by generating all necessary files including the component widget, theme files, and proper integration with your design system.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/your-username/component_creator
 repository: https://github.com/your-username/component_creator
 issue_tracker: https://github.com/your-username/component_creator/issues

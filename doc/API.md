@@ -93,7 +93,7 @@ Updates the main theme file to include the new component's theme parts.
 - `snakeName` - The snake_case file name (e.g., "ds_button")
 
 **Updates:**
-- Adds part "../docs"directives to `lib/theme/ds_theme.dart`
+- Adds part directives to `lib/theme/ds_theme.dart`
 - Creates the file if it doesn't exist
 
 #### _updateDsAppThemeExtensions(String className)
@@ -170,19 +170,51 @@ Generates the template for a component theme file.
 
 #### themeExtensionFileContent(String className)
 
-Generates the template for a component theme extension file.
+Generates the template for a component theme extension file with component variants support.
 
 **Parameters:**
 - `className` - The PascalCase class name (e.g., "DSButton")
 
 **Returns:**
-- A string containing the theme extension template
+- A string containing the theme extension template with variants enum
 
 **Template includes:**
 - Part directive for ds_theme.dart
+- **Component Variants Enum**: `${className}Variants` enum for defining component variants
 - ThemeExtension class definition
 - Theme instance property
 - copyWith and lerp method implementations
+
+**New in v0.0.2:**
+- **Component Variants**: Automatically generates `${className}Variants` enum
+- **Enhanced Structure**: Better organization of theme extension code
+- **Variant Support**: Ready-to-use enum for defining component variants (primary, secondary, etc.)
+
+**Example Generated Template:**
+```dart
+part of '../../ds_theme.dart';
+
+enum DSButtonVariants {
+  // TODO: Define variants for DSButton component
+}
+
+class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
+  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+
+  @override
+  ThemeExtension<DSButtonThemeExt> copyWith() {
+    return DSButtonThemeExt();
+  }
+
+  @override
+  ThemeExtension<DSButtonThemeExt> lerp(
+    covariant ThemeExtension<DSButtonThemeExt>? other,
+    double t,
+  ) {
+    return DSButtonThemeExt();
+  }
+}
+```
 
 #### baseDsThemeFileContent()
 
@@ -274,7 +306,7 @@ Converts a string to camelCase format.
 **Examples:**
 ```dart
 "hello_world".camelCase // Returns "helloWorld"
-"MyAwesomeClass".camelCase // Returns "myAwesomeClass"
+"my_awesome_class".camelCase // Returns "myAwesomeClass"
 "hello-world".camelCase // Returns "helloWorld"
 ```
 
@@ -360,4 +392,28 @@ String componentName = "MyAwesomeButton";
 String fileName = componentName.snakeCase; // "my_awesome_button"
 String className = componentName.pascalCase; // "MyAwesomeButton"
 String kebabName = componentName.kebabCase; // "my-awesome-button"
+```
+
+### Component Variants Usage (v0.0.2+)
+
+```dart
+// Generated enum in theme extension
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+}
+
+// Usage in component
+class DSButton extends StatefulWidget {
+  final DSButtonVariants variant;
+  
+  const DSButton({
+    super.key,
+    this.variant = DSButtonVariants.primary,
+  });
+  
+  // ... rest of implementation
+}
 ``` 
