@@ -50,6 +50,10 @@ class ${className}Theme {
     return '''
 part of '../../ds_theme.dart';
 
+enum ${className}Variants {
+  // TODO: Define variants for $className component
+}
+
 class ${className}ThemeExt extends ThemeExtension<${className}ThemeExt> {
   final ${className}Theme ${className.camelCase}Theme = ${className}Theme();
 
