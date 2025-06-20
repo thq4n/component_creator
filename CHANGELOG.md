@@ -13,6 +13,115 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for different naming conventions
 - Add interactive component creation wizard
 
+## [0.0.4] - 2025-06-20
+
+### Changed
+- **Theme Extension Naming Consistency**: Refactored theme extension class and instance naming for better consistency
+- **Improved Class Names**: Changed theme extension class from `${className}ThemeExt` to `${className}ThemeExtension`
+- **Enhanced Instance Names**: Updated instance names from `${className}Extension()` to `${className}ThemeExtension()`
+- **Better Variable Names**: Improved variable naming consistency in theme extensions
+
+### Refactoring
+- **Consistent Naming Convention**: All theme extension classes now follow the pattern `${className}ThemeExtension`
+- **Clearer Instance References**: Theme extension instances now use more descriptive names
+- **Improved Code Readability**: Better naming makes the generated code more intuitive and maintainable
+
+### Technical Details
+- **Class Name Update**: Theme extension classes now use `${className}ThemeExtension` instead of `${className}ThemeExt`
+- **Instance Name Update**: App theme integration now uses `${className}ThemeExtension()` instead of `${className}Extension()`
+- **Variable Name Update**: Theme instance variable now uses `${className.camelCase}Theme` for consistency
+- **Template Consistency**: All templates now follow the same naming pattern for better maintainability
+
+### Generated Files
+For each component, the tool now generates:
+1. **Component Widget**: `lib/components/ds_{component_name}/ds_{component_name}.dart` (with variant parameter)
+2. **Theme Class**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.dart`
+3. **Theme Extension**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart` (with consistent naming)
+4. **Theme Integration**: Updates `lib/theme/ds_theme.dart` with part directives
+5. **App Theme Integration**: Updates `lib/theme/base/app_theme/ds_app_theme.dart` with properly formatted extensions
+
+### Example Generated Theme Extension
+```dart
+part of '../../ds_theme.dart';
+
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+  // TODO: Define variants for DSButton component
+}
+
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
+  }
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
+    double t,
+  ) {
+    return DSButtonThemeExtension();
+  }
+}
+```
+
+### Example App Theme Integration
+```dart
+// lib/theme/base/app_theme/ds_app_theme.dart
+import 'package:flutter/material.dart';
+
+class DSAppTheme {
+  static ThemeData get lightTheme {
+    return ThemeData(
+      extensions: [
+        DSButtonThemeExtension(), // Consistent naming
+        // ... other extensions
+      ],
+    );
+  }
+}
+```
+
+### Usage Examples
+```bash
+# Interactive mode
+component_creator
+
+# Direct mode
+component_creator Button
+component_creator "Custom Card"
+component_creator MyAwesomeWidget
+```
+
+### Breaking Changes
+- **Theme Extension Class Names**: Generated theme extension classes now use `${className}ThemeExtension` instead of `${className}ThemeExt`
+- **Instance References**: App theme files now reference `${className}ThemeExtension()` instead of `${className}Extension()`
+
+### Migration Guide
+If you have existing components generated with previous versions:
+1. Update any manual references to theme extension classes
+2. Update app theme file extension references
+3. Regenerate components for consistency
+
+### Known Issues
+- Limited to StatefulWidget components only
+- No support for custom template customization
+- Error messages are in Vietnamese only
+- No validation for component name format
+
+### Future Enhancements
+- Support for StatelessWidget components
+- Custom template configuration
+- Internationalization for error messages
+- Component name validation and suggestions
+- Interactive component creation wizard
+- Integration with popular IDEs
+
 ## [0.0.3] - 2025-06-20
 
 ### Added
@@ -309,9 +418,15 @@ dart pub global activate component_creator
 
 ## Version History
 
-### Version 0.0.3
+### Version 0.0.4
 - **Release Date**: 2025-06-20
 - **Status**: Latest release
+- **Features**: Theme extension naming consistency, improved class names, enhanced instance names
+- **Target**: Flutter developers using design systems with consistent naming conventions
+
+### Version 0.0.3
+- **Release Date**: 2025-06-20
+- **Status**: Previous release
 - **Features**: Component variants support, enhanced theme extensions, improved templates, automatic variant parameters
 - **Target**: Flutter developers using design systems with variant support
 
@@ -346,6 +461,48 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## Release Notes
+
+### Version 0.0.4 Release Notes
+
+**What's New:**
+- 🎯 **Theme Extension Naming Consistency**: Refactored theme extension class and instance naming for better consistency
+- 📝 **Improved Class Names**: Changed theme extension class from `${className}ThemeExt` to `${className}ThemeExtension`
+- 🔧 **Enhanced Instance Names**: Updated instance names from `${className}Extension()` to `${className}ThemeExtension()`
+- 🎨 **Better Variable Names**: Improved variable naming consistency in theme extensions
+
+**Getting Started:**
+1. Install the tool: `dart pub global activate component_creator`
+2. Create your first component: `component_creator Button`
+3. Use the generated component with consistent naming: `DSButtonThemeExtension()`
+4. Customize the generated code as needed
+
+**Breaking Changes:**
+- **Theme Extension Class Names**: Generated theme extension classes now use `${className}ThemeExtension` instead of `${className}ThemeExt`
+- **Instance References**: App theme files now reference `${className}ThemeExtension()` instead of `${className}Extension()`
+
+**Migration Guide:**
+If you have existing components generated with previous versions:
+1. Update any manual references to theme extension classes
+2. Update app theme file extension references
+3. Regenerate components for consistency
+
+**New Features:**
+- Consistent naming convention for all theme extension classes
+- Clearer instance references in app theme files
+- Improved code readability and maintainability
+- Better template consistency across all generated files
+
+**Technical Improvements:**
+- **Class Name Update**: Theme extension classes now use `${className}ThemeExtension` instead of `${className}ThemeExt`
+- **Instance Name Update**: App theme integration now uses `${className}ThemeExtension()` instead of `${className}Extension()`
+- **Variable Name Update**: Theme instance variable now uses `${className.camelCase}Theme` for consistency
+- **Template Consistency**: All templates now follow the same naming pattern for better maintainability
+
+**Next Steps:**
+- Add StatelessWidget support
+- Implement custom templates
+- Add internationalization
+- Create interactive wizard
 
 ### Version 0.0.3 Release Notes
 

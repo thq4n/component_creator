@@ -6,9 +6,10 @@ A quick reference guide for the Component Creator tool with all essential comman
 
 - [Installation](#installation)
 - [Basic Commands](#basic-commands)
-- [Component Variants (v0.0.3+)](#component-variants-v003)
+- [Component Variants (v0.0.4+)](#component-variants-v004)
 - [Generated Files](#generated-files)
 - [Naming Conventions](#naming-conventions)
+- [Breaking Changes (v0.0.4)](#breaking-changes-v004)
 - [Troubleshooting](#troubleshooting)
 
 ## Installation
@@ -44,7 +45,7 @@ component_creator MyAwesomeWidget
 component_creator --help
 ```
 
-## Component Variants (v0.0.3+)
+## Component Variants (v0.0.4+)
 
 ### Generated Enum with Default Variants
 ```dart
@@ -65,6 +66,14 @@ class DSButton extends StatefulWidget {
   
   @override
   State<DSButton> createState() => _DSButtonState();
+}
+```
+
+### Theme Extension with Consistent Naming
+```dart
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+  // ... implementation
 }
 ```
 
@@ -117,9 +126,9 @@ lib/
 
 | Input | Component Class | File Name | Theme Class | Theme Extension |
 |-------|----------------|-----------|-------------|-----------------|
-| `Button` | `DSButton` | `ds_button.dart` | `DSButtonTheme` | `DSButtonThemeExt` |
-| `CustomCard` | `DSCustomCard` | `ds_custom_card.dart` | `DSCustomCardTheme` | `DSCustomCardThemeExt` |
-| `MyAwesomeWidget` | `DSMyAwesomeWidget` | `ds_my_awesome_widget.dart` | `DSMyAwesomeWidgetTheme` | `DSMyAwesomeWidgetThemeExt` |
+| `Button` | `DSButton` | `ds_button.dart` | `DSButtonTheme` | `DSButtonThemeExtension` |
+| `CustomCard` | `DSCustomCard` | `ds_custom_card.dart` | `DSCustomCardTheme` | `DSCustomCardThemeExtension` |
+| `MyAwesomeWidget` | `DSMyAwesomeWidget` | `ds_my_awesome_widget.dart` | `DSMyAwesomeWidgetTheme` | `DSMyAwesomeWidgetThemeExtension` |
 
 ## Project Structure Requirements
 
@@ -147,7 +156,7 @@ class DSAppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       extensions: [
-        // Component theme extensions will be added here with proper formatting
+        // Component theme extensions will be added here with consistent naming
       ],
     );
   }
@@ -172,7 +181,7 @@ class DSButton extends StatefulWidget {
 
 class _DSButtonState extends DSStateBase<DSButton> {
   late DSButtonTheme componentTheme =
-      theme.extension<DSButtonThemeExt>()!.dSButtonTheme;
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +190,7 @@ class _DSButtonState extends DSStateBase<DSButton> {
 }
 ```
 
-### Theme Extension Template (v0.0.3+)
+### Theme Extension Template (v0.0.4+)
 ```dart
 part of '../../ds_theme.dart';
 
@@ -193,20 +202,20 @@ enum DSButtonVariants {
   // TODO: Define variants for DSButton component
 }
 
-class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
   final DSButtonTheme dSButtonTheme = DSButtonTheme();
 
   @override
-  ThemeExtension<DSButtonThemeExt> copyWith() {
-    return DSButtonThemeExt();
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
   }
 
   @override
-  ThemeExtension<DSButtonThemeExt> lerp(
-    covariant ThemeExtension<DSButtonThemeExt>? other,
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
     double t,
   ) {
-    return DSButtonThemeExt();
+    return DSButtonThemeExtension();
   }
 }
 ```
@@ -287,6 +296,42 @@ Widget _buildButton() {
 }
 ```
 
+## Breaking Changes (v0.0.4)
+
+### Theme Extension Class Names
+- **Before**: `${className}ThemeExt`
+- **After**: `${className}ThemeExtension`
+
+### Instance References
+- **Before**: `${className}Extension()`
+- **After**: `${className}ThemeExtension()`
+
+### Migration Guide
+If you have existing components generated with previous versions:
+
+1. **Update manual references:**
+   ```dart
+   // Change from
+   theme.extension<DSButtonThemeExt>()
+   // To
+   theme.extension<DSButtonThemeExtension>()
+   ```
+
+2. **Update app theme file:**
+   ```dart
+   // Change from
+   DSButtonExtension(),
+   // To
+   DSButtonThemeExtension(),
+   ```
+
+3. **Regenerate components:**
+   ```bash
+   rm -rf lib/components/ds_button
+   rm -rf lib/theme/components/ds_button
+   component_creator Button
+   ```
+
 ## Troubleshooting
 
 ### Common Error Messages
@@ -297,6 +342,7 @@ Widget _buildButton() {
 | "File ds_app_theme.dart không tồn tại" | Create required app theme file |
 | "Lỗi khi format code" | Install dart_style: `dart pub global activate dart_style` |
 | "Lỗi khi tạo component" | Check file permissions and dependencies |
+| Naming inconsistency errors | Follow migration guide for v0.0.4 |
 
 ### Quick Fixes
 
@@ -310,6 +356,11 @@ dart pub global activate dart_style
 
 # Check dependencies
 dart pub get
+
+# Migrate from v0.0.3 or earlier
+rm -rf lib/components/ds_button
+rm -rf lib/theme/components/ds_button
+component_creator Button
 ```
 
 ### Required Dependencies
@@ -322,7 +373,13 @@ dependencies:
 
 ## Version History
 
-### Version 0.0.3 (Current)
+### Version 0.0.4 (Current)
+- 🎯 **Theme Extension Naming Consistency**: Refactored theme extension class and instance naming for better consistency
+- 📝 **Improved Class Names**: Changed theme extension class from `${className}ThemeExt` to `${className}ThemeExtension`
+- 🔧 **Enhanced Instance Names**: Updated instance names from `${className}Extension()` to `${className}ThemeExtension()`
+- 🎨 **Better Variable Names**: Improved variable naming consistency in theme extensions
+
+### Version 0.0.3
 - ✨ **Component Variants Support**: Added enum generation for component variants with default variants
 - 🎨 **Enhanced Theme Extensions**: Better structure for theme extensions with variant definitions
 - 📝 **Improved Code Organization**: Cleaner template structure
@@ -368,6 +425,11 @@ dependencies:
 - Review code before committing
 - Use tool consistently across team
 
+### 6. Migration Strategy
+- When upgrading to v0.0.4+, follow the migration guide
+- Test components after migration
+- Update any custom code that references old naming
+
 ## Quick Commands Reference
 
 ```bash
@@ -390,19 +452,24 @@ dart format lib
 
 # Check dependencies
 dart pub get
+
+# Migration from v0.0.3 or earlier
+rm -rf lib/components/ds_button
+rm -rf lib/theme/components/ds_button
+component_creator Button
 ```
 
 ## File Templates Summary
 
 ### Component Widget
 - StatefulWidget with theme integration
-- Automatic variant parameter (v0.0.3+)
+- Automatic variant parameter (v0.0.4+)
 - DSStateBase extension
-- Theme extension access
+- Theme extension access with consistent naming
 
-### Theme Extension (v0.0.3+)
+### Theme Extension (v0.0.4+)
 - Component variants enum with defaults
-- ThemeExtension implementation
+- ThemeExtension implementation with consistent naming
 - copyWith and lerp methods
 - Theme instance property
 
@@ -413,8 +480,16 @@ dart pub get
 
 ### Integration Files
 - ds_theme.dart: Part directives
-- ds_app_theme.dart: Extensions array with proper formatting
+- ds_app_theme.dart: Extensions array with consistent naming
+
+## Naming Conventions Summary
+
+| Component | Class Name | Theme Extension | Instance Reference |
+|-----------|------------|-----------------|-------------------|
+| Button | DSButton | DSButtonThemeExtension | DSButtonThemeExtension() |
+| CustomCard | DSCustomCard | DSCustomCardThemeExtension | DSCustomCardThemeExtension() |
+| MyWidget | DSMyWidget | DSMyWidgetThemeExtension | DSMyWidgetThemeExtension() |
 
 ---
 
-*This quick reference covers all essential aspects of using the Component Creator tool with component variants support and automatic variant parameters.* 
+*This quick reference covers all essential aspects of using the Component Creator tool with component variants support, automatic variant parameters, and consistent naming conventions.* 

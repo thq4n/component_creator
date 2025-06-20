@@ -18,6 +18,7 @@ A powerful CLI tool for automatically generating Flutter components with integra
 - 🛡️ **Error Handling**: Comprehensive error handling with helpful messages
 - 📚 **Comprehensive Documentation**: Detailed guides and API documentation
 - ⚡ **Smart Defaults**: Components come with automatic variant parameters and default variants
+- 🎯 **Consistent Naming**: Theme extension classes follow consistent naming conventions
 
 ## 🚀 Quick Start
 
@@ -59,9 +60,9 @@ lib/
             └── ds_button_theme.ext.dart # Theme extension with default variants
 ```
 
-## 🎨 Component Variants (v0.0.3+)
+## 🎨 Component Variants (v0.0.4+)
 
-Starting from version 0.0.3, each component automatically includes variants support with smart defaults:
+Starting from version 0.0.4, each component automatically includes variants support with smart defaults and consistent naming:
 
 ```dart
 // Generated component with automatic variant parameter
@@ -80,6 +81,12 @@ enum DSButtonVariants {
   ghost,
   // TODO: Define variants for DSButton component
 }
+
+// Generated theme extension with consistent naming
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+  // ... implementation
+}
 ```
 
 ### Benefits of Component Variants
@@ -90,6 +97,7 @@ enum DSButtonVariants {
 - **Flexible Styling**: Easy to add new variants or modify existing ones
 - **Smart Defaults**: Components come with common variants pre-defined
 - **Automatic Integration**: Variant parameter automatically included in generated components
+- **Consistent Naming**: Theme extension classes follow clear naming conventions
 
 ## 📖 Documentation
 
@@ -163,7 +171,7 @@ class DSAppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       extensions: [
-        // Component theme extensions will be added here
+        // Component theme extensions will be added here with consistent naming
       ],
     );
   }
@@ -218,7 +226,7 @@ class DSButton extends StatefulWidget {
 
 class _DSButtonState extends DSStateBase<DSButton> {
   late DSButtonTheme componentTheme =
-      theme.extension<DSButtonThemeExt>()!.dSButtonTheme;
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -271,20 +279,20 @@ class DSButtonTheme {
   final Color dangerColor = Colors.red;
 }
 
-class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
   final DSButtonTheme dSButtonTheme = DSButtonTheme();
 
   @override
-  ThemeExtension<DSButtonThemeExt> copyWith() {
-    return DSButtonThemeExt();
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
   }
 
   @override
-  ThemeExtension<DSButtonThemeExt> lerp(
-    covariant ThemeExtension<DSButtonThemeExt>? other,
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
     double t,
   ) {
-    return DSButtonThemeExt();
+    return DSButtonThemeExtension();
   }
 }
 ```
@@ -297,9 +305,9 @@ The tool automatically handles naming conventions:
 
 | Input | Component Class | File Name | Theme Class | Theme Extension |
 |-------|----------------|-----------|-------------|-----------------|
-| `Button` | `DSButton` | `ds_button.dart` | `DSButtonTheme` | `DSButtonThemeExt` |
-| `CustomCard` | `DSCustomCard` | `ds_custom_card.dart` | `DSCustomCardTheme` | `DSCustomCardThemeExt` |
-| `MyAwesomeWidget` | `DSMyAwesomeWidget` | `ds_my_awesome_widget.dart` | `DSMyAwesomeWidgetTheme` | `DSMyAwesomeWidgetThemeExt` |
+| `Button` | `DSButton` | `ds_button.dart` | `DSButtonTheme` | `DSButtonThemeExtension` |
+| `CustomCard` | `DSCustomCard` | `ds_custom_card.dart` | `DSCustomCardTheme` | `DSCustomCardThemeExtension` |
+| `MyAwesomeWidget` | `DSMyAwesomeWidget` | `ds_my_awesome_widget.dart` | `DSMyAwesomeWidgetTheme` | `DSMyAwesomeWidgetThemeExtension` |
 
 ### Customization
 
@@ -394,7 +402,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Version History
 
-### Version 0.0.3 (Current)
+### Version 0.0.4 (Current)
+- 🎯 **Theme Extension Naming Consistency**: Refactored theme extension class and instance naming for better consistency
+- 📝 **Improved Class Names**: Changed theme extension class from `${className}ThemeExt` to `${className}ThemeExtension`
+- 🔧 **Enhanced Instance Names**: Updated instance names from `${className}Extension()` to `${className}ThemeExtension()`
+- 🎨 **Better Variable Names**: Improved variable naming consistency in theme extensions
+
+### Version 0.0.3
 - ✨ **Component Variants Support**: Added enum generation for component variants with default variants
 - 🎨 **Enhanced Theme Extensions**: Better structure for theme extensions with variant definitions
 - 📝 **Improved Code Organization**: Cleaner template structure

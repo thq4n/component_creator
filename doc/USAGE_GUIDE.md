@@ -8,9 +8,10 @@ This guide provides step-by-step instructions for using the Component Creator to
 - [Quick Start](#quick-start)
 - [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
-- [Component Variants (v0.0.3+)](#component-variants-v003)
+- [Component Variants (v0.0.4+)](#component-variants-v004)
 - [Generated Files](#generated-files)
 - [Customization](#customization)
+- [Breaking Changes (v0.0.4)](#breaking-changes-v004)
 - [Troubleshooting](#troubleshooting)
 
 ## Installation
@@ -142,18 +143,18 @@ class DSAppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       extensions: [
-        // Component theme extensions will be added here with proper formatting
+        // Component theme extensions will be added here with consistent naming
       ],
     );
   }
 }
 ```
 
-## Component Variants (v0.0.3+)
+## Component Variants (v0.0.4+)
 
 ### Overview
 
-Starting from version 0.0.3, the tool automatically generates component variants support with smart defaults. Each component now includes a variants enum with common variants pre-defined and an automatic variant parameter.
+Starting from version 0.0.4, the tool automatically generates component variants support with smart defaults and consistent naming. Each component now includes a variants enum with common variants pre-defined, an automatic variant parameter, and consistent theme extension naming.
 
 ### Generated Variants Enum
 
@@ -182,6 +183,19 @@ class DSButton extends StatefulWidget {
   
   @override
   State<DSButton> createState() => _DSButtonState();
+}
+```
+
+### Consistent Theme Extension Naming
+
+Theme extension classes now follow consistent naming conventions:
+
+```dart
+// Generated theme extension with consistent naming
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+  
+  // ... implementation
 }
 ```
 
@@ -215,7 +229,7 @@ class DSButton extends StatefulWidget {
    ```dart
    class _DSButtonState extends DSStateBase<DSButton> {
      late DSButtonTheme componentTheme =
-         theme.extension<DSButtonThemeExt>()!.dSButtonTheme;
+         theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
 
      @override
      Widget build(BuildContext context) {
@@ -281,6 +295,7 @@ class DSButton extends StatefulWidget {
 - **Better UX**: Consistent component behavior across variants
 - **Smart Defaults**: Components come with common variants pre-defined
 - **Automatic Integration**: Variant parameter automatically included in generated components
+- **Consistent Naming**: Theme extension classes follow clear naming conventions
 
 ## Generated Files
 
@@ -290,7 +305,7 @@ For each component, the tool generates the following files:
 
 **Location**: `lib/components/ds_{component_name}/ds_{component_name}.dart`
 
-**Content**: StatefulWidget with theme integration and automatic variant parameter
+**Content**: StatefulWidget with theme integration, automatic variant parameter, and consistent naming
 
 ```dart
 import '../../theme/ds_theme.dart';
@@ -307,7 +322,7 @@ class DSButton extends StatefulWidget {
 
 class _DSButtonState extends DSStateBase<DSButton> {
   late DSButtonTheme componentTheme =
-      theme.extension<DSButtonThemeExt>()!.dSButtonTheme;
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -330,11 +345,11 @@ class DSButtonTheme {
 }
 ```
 
-### 3. Theme Extension (v0.0.3+)
+### 3. Theme Extension (v0.0.4+)
 
 **Location**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart`
 
-**Content**: Theme extension with variants enum and default variants
+**Content**: Theme extension with variants enum, default variants, and consistent naming
 
 ```dart
 part of '../../ds_theme.dart';
@@ -347,20 +362,20 @@ enum DSButtonVariants {
   // TODO: Define variants for DSButton component
 }
 
-class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
   final DSButtonTheme dSButtonTheme = DSButtonTheme();
 
   @override
-  ThemeExtension<DSButtonThemeExt> copyWith() {
-    return DSButtonThemeExt();
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
   }
 
   @override
-  ThemeExtension<DSButtonThemeExt> lerp(
-    covariant ThemeExtension<DSButtonThemeExt>? other,
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
     double t,
   ) {
-    return DSButtonThemeExt();
+    return DSButtonThemeExtension();
   }
 }
 ```
@@ -381,11 +396,11 @@ part 'components/ds_button/ds_button_theme.ext.dart';
 
 **Updates**: `lib/theme/base/app_theme/ds_app_theme.dart`
 
-**Adds**: Theme extension to the extensions array with proper formatting
+**Adds**: Theme extension to the extensions array with proper formatting and consistent naming
 
 ```dart
 extensions: [
-  DSButtonThemeExt(),
+  DSButtonThemeExtension(), // Consistent naming
   // ... other extensions
 ],
 ```
@@ -456,6 +471,97 @@ After generation, you can customize the code:
 
 To customize the generated templates, you can modify the `Templates` class in `lib/tool/templates.dart`.
 
+## Breaking Changes (v0.0.4)
+
+### Theme Extension Class Names
+
+**Before (v0.0.3 and earlier):**
+```dart
+class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
+  // ... implementation
+}
+```
+
+**After (v0.0.4+):**
+```dart
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  // ... implementation
+}
+```
+
+### Instance References
+
+**Before (v0.0.3 and earlier):**
+```dart
+// In app theme file
+extensions: [
+  DSButtonExtension(), // Old naming
+],
+```
+
+**After (v0.0.4+):**
+```dart
+// In app theme file
+extensions: [
+  DSButtonThemeExtension(), // New consistent naming
+],
+```
+
+### Component Usage
+
+**Before (v0.0.3 and earlier):**
+```dart
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExt>()!.dSButtonTheme; // Old naming
+}
+```
+
+**After (v0.0.4+):**
+```dart
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme; // New naming
+}
+```
+
+### Migration Guide
+
+If you have existing components generated with previous versions:
+
+1. **Update manual references to theme extension classes:**
+   ```dart
+   // Change from
+   theme.extension<DSButtonThemeExt>()
+   // To
+   theme.extension<DSButtonThemeExtension>()
+   ```
+
+2. **Update app theme file extension references:**
+   ```dart
+   // Change from
+   DSButtonExtension(),
+   // To
+   DSButtonThemeExtension(),
+   ```
+
+3. **Regenerate components for consistency:**
+   ```bash
+   # Delete old generated files
+   rm -rf lib/components/ds_button
+   rm -rf lib/theme/components/ds_button
+   
+   # Regenerate with new naming
+   component_creator Button
+   ```
+
+### Benefits of the New Naming
+
+- **Consistency**: All theme extension classes follow the same pattern
+- **Clarity**: Names are more descriptive and self-explanatory
+- **Maintainability**: Easier to understand and maintain
+- **Future-proof**: Better foundation for future enhancements
+
 ## Troubleshooting
 
 ### Common Issues
@@ -492,7 +598,7 @@ dart pub global activate dart_style
 
 #### 3. Component not appearing in theme
 
-**Solution**: Check that the theme extension is added to the extensions array in `ds_app_theme.dart`. The tool now properly formats extensions.
+**Solution**: Check that the theme extension is added to the extensions array in `ds_app_theme.dart`. The tool now properly formats extensions with consistent naming.
 
 #### 4. Import errors
 
@@ -503,6 +609,10 @@ dependencies:
   design_system_project:
     path: ../design_system_project
 ```
+
+#### 5. Naming inconsistency errors
+
+**Solution**: If you're upgrading from v0.0.3 or earlier, follow the migration guide above to update your existing components.
 
 ### Debug Mode
 
@@ -553,6 +663,12 @@ print('File path: ${file.path}');
 - Review generated code before committing
 - Use the tool consistently across your team
 
+### 6. Migration Strategy
+
+- When upgrading to v0.0.4+, follow the migration guide
+- Test components after migration
+- Update any custom code that references old naming
+
 ## Examples
 
 ### Complete Button Component
@@ -581,7 +697,7 @@ class DSButton extends StatefulWidget {
 
 class _DSButtonState extends DSStateBase<DSButton> {
   late DSButtonTheme componentTheme =
-      theme.extension<DSButtonThemeExt>()!.dSButtonTheme;
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -640,23 +756,22 @@ class DSButtonTheme {
   final Color successColor = Colors.green;
 }
 
-class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
   final DSButtonTheme dSButtonTheme = DSButtonTheme();
 
   @override
-  ThemeExtension<DSButtonThemeExt> copyWith() {
-    return DSButtonThemeExt();
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
   }
 
   @override
-  ThemeExtension<DSButtonThemeExt> lerp(
-    covariant ThemeExtension<DSButtonThemeExt>? other,
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
     double t,
   ) {
-    return DSButtonThemeExt();
+    return DSButtonThemeExtension();
   }
 }
 ```
 
-This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with component variants support and automatic variant parameters. 
-This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with component variants support. 
+This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with component variants support, automatic variant parameters, and consistent naming conventions. 

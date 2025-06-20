@@ -98,7 +98,7 @@ Updates the main theme file to include the new component's theme parts.
 
 #### _updateDsAppThemeExtensions(String className)
 
-Updates the app theme file to include the new component's theme extension with proper formatting.
+Updates the app theme file to include the new component's theme extension with proper formatting and consistent naming.
 
 **Parameters:**
 - `className` - The PascalCase class name (e.g., "DSButton")
@@ -106,6 +106,7 @@ Updates the app theme file to include the new component's theme extension with p
 **Updates:**
 - Adds the component's theme extension to the extensions array in `lib/theme/base/app_theme/ds_app_theme.dart`
 - **Fixed Formatting**: Properly formats extensions with correct comma placement
+- **Consistent Naming**: Uses `${className}ThemeExtension()` for consistent naming
 
 #### _formatCode()
 
@@ -152,13 +153,12 @@ Generates the template for a StatefulWidget component with automatic variant par
 - Proper imports for theme and Flutter
 - StatefulWidget class definition with automatic variant parameter
 - State class extending DSStateBase
-- Theme integration setup
+- Theme integration setup with consistent naming
 - Basic build method structure
 
-**New in v0.0.3:**
-- **Automatic Variant Parameter**: Components now include `final ${className}Variants variant` parameter
-- **Default Value**: Variant parameter has default value of `${className}Variants.primary`
-- **Consistent Structure**: All generated components follow the same variant pattern
+**New in v0.0.4:**
+- **Consistent Theme Extension Naming**: Uses `${className}ThemeExtension` for consistent naming
+- **Improved Code Readability**: Better naming makes the generated code more intuitive and maintainable
 
 #### themeFileContent(String className)
 
@@ -176,25 +176,27 @@ Generates the template for a component theme file.
 
 #### themeExtensionFileContent(String className)
 
-Generates the template for a component theme extension file with component variants support and default variants.
+Generates the template for a component theme extension file with component variants support, default variants, and consistent naming.
 
 **Parameters:**
 - `className` - The PascalCase class name (e.g., "DSButton")
 
 **Returns:**
-- A string containing the theme extension template with variants enum and defaults
+- A string containing the theme extension template with variants enum, defaults, and consistent naming
 
 **Template includes:**
 - Part directive for ds_theme.dart
 - **Component Variants Enum**: `${className}Variants` enum with default variants
-- ThemeExtension class definition
-- Theme instance property
-- copyWith and lerp method implementations
+- **Consistent Theme Extension Class**: `${className}ThemeExtension` class with consistent naming
+- ThemeExtension class definition with proper naming
+- Theme instance property with consistent variable naming
+- copyWith and lerp method implementations with consistent naming
 
-**New in v0.0.3:**
-- **Default Variants**: Automatically includes common variants (primary, secondary, outline, ghost)
-- **Enhanced Structure**: Better organization of theme extension code
-- **Variant Support**: Ready-to-use enum for defining component variants with sensible defaults
+**New in v0.0.4:**
+- **Consistent Class Names**: Theme extension classes now use `${className}ThemeExtension` instead of `${className}ThemeExt`
+- **Improved Instance Names**: App theme integration uses `${className}ThemeExtension()` instead of `${className}Extension()`
+- **Better Variable Names**: Theme instance variable uses `${className.camelCase}Theme` for consistency
+- **Template Consistency**: All templates now follow the same naming pattern for better maintainability
 
 **Example Generated Template:**
 ```dart
@@ -208,20 +210,20 @@ enum DSButtonVariants {
   // TODO: Define variants for DSButton component
 }
 
-class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
   final DSButtonTheme dSButtonTheme = DSButtonTheme();
 
   @override
-  ThemeExtension<DSButtonThemeExt> copyWith() {
-    return DSButtonThemeExt();
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
   }
 
   @override
-  ThemeExtension<DSButtonThemeExt> lerp(
-    covariant ThemeExtension<DSButtonThemeExt>? other,
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
     double t,
   ) {
-    return DSButtonThemeExt();
+    return DSButtonThemeExtension();
   }
 }
 ```
@@ -404,7 +406,7 @@ String className = componentName.pascalCase; // "MyAwesomeButton"
 String kebabName = componentName.kebabCase; // "my-awesome-button"
 ```
 
-### Component Variants Usage (v0.0.3+)
+### Component Variants Usage (v0.0.4+)
 
 ```dart
 // Generated enum in theme extension with default variants
@@ -416,7 +418,7 @@ enum DSButtonVariants {
   // TODO: Define variants for DSButton component
 }
 
-// Usage in component with automatic variant parameter
+// Usage in component with automatic variant parameter and consistent naming
 class DSButton extends StatefulWidget {
   final DSButtonVariants variant;
   
@@ -428,8 +430,52 @@ class DSButton extends StatefulWidget {
   // ... rest of implementation
 }
 
+// Usage in state class with consistent theme extension naming
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
+  
+  // ... rest of implementation
+}
+
 // Usage examples
 DSButton(variant: DSButtonVariants.primary)
 DSButton(variant: DSButtonVariants.secondary)
 DSButton() // Uses default primary variant
-``` 
+
+// App theme integration with consistent naming
+class DSAppTheme {
+  static ThemeData get lightTheme {
+    return ThemeData(
+      extensions: [
+        DSButtonThemeExtension(), // Consistent naming
+        // ... other extensions
+      ],
+    );
+  }
+}
+```
+
+### Breaking Changes in v0.0.4
+
+#### Theme Extension Class Names
+- **Before**: `${className}ThemeExt`
+- **After**: `${className}ThemeExtension`
+
+#### Instance References
+- **Before**: `${className}Extension()`
+- **After**: `${className}ThemeExtension()`
+
+#### Migration Guide
+If you have existing components generated with previous versions:
+1. Update any manual references to theme extension classes
+2. Update app theme file extension references
+3. Regenerate components for consistency
+
+### Naming Conventions Summary
+
+| Component | Class Name | Theme Extension | Instance Reference |
+|-----------|------------|-----------------|-------------------|
+| Button | DSButton | DSButtonThemeExtension | DSButtonThemeExtension() |
+| CustomCard | DSCustomCard | DSCustomCardThemeExtension | DSCustomCardThemeExtension() |
+| MyWidget | DSMyWidget | DSMyWidgetThemeExtension | DSMyWidgetThemeExtension() | 
