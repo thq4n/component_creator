@@ -98,13 +98,14 @@ Updates the main theme file to include the new component's theme parts.
 
 #### _updateDsAppThemeExtensions(String className)
 
-Updates the app theme file to include the new component's theme extension.
+Updates the app theme file to include the new component's theme extension with proper formatting.
 
 **Parameters:**
 - `className` - The PascalCase class name (e.g., "DSButton")
 
 **Updates:**
 - Adds the component's theme extension to the extensions array in `lib/theme/base/app_theme/ds_app_theme.dart`
+- **Fixed Formatting**: Properly formats extensions with correct comma placement
 
 #### _formatCode()
 
@@ -138,7 +139,7 @@ Static class containing all template strings for generating different file types
 
 #### statefulWidget(String className, String snakeFileName)
 
-Generates the template for a StatefulWidget component.
+Generates the template for a StatefulWidget component with automatic variant parameter.
 
 **Parameters:**
 - `className` - The PascalCase class name (e.g., "DSButton")
@@ -149,10 +150,15 @@ Generates the template for a StatefulWidget component.
 
 **Template includes:**
 - Proper imports for theme and Flutter
-- StatefulWidget class definition
+- StatefulWidget class definition with automatic variant parameter
 - State class extending DSStateBase
 - Theme integration setup
 - Basic build method structure
+
+**New in v0.0.3:**
+- **Automatic Variant Parameter**: Components now include `final ${className}Variants variant` parameter
+- **Default Value**: Variant parameter has default value of `${className}Variants.primary`
+- **Consistent Structure**: All generated components follow the same variant pattern
 
 #### themeFileContent(String className)
 
@@ -170,31 +176,35 @@ Generates the template for a component theme file.
 
 #### themeExtensionFileContent(String className)
 
-Generates the template for a component theme extension file with component variants support.
+Generates the template for a component theme extension file with component variants support and default variants.
 
 **Parameters:**
 - `className` - The PascalCase class name (e.g., "DSButton")
 
 **Returns:**
-- A string containing the theme extension template with variants enum
+- A string containing the theme extension template with variants enum and defaults
 
 **Template includes:**
 - Part directive for ds_theme.dart
-- **Component Variants Enum**: `${className}Variants` enum for defining component variants
+- **Component Variants Enum**: `${className}Variants` enum with default variants
 - ThemeExtension class definition
 - Theme instance property
 - copyWith and lerp method implementations
 
-**New in v0.0.2:**
-- **Component Variants**: Automatically generates `${className}Variants` enum
+**New in v0.0.3:**
+- **Default Variants**: Automatically includes common variants (primary, secondary, outline, ghost)
 - **Enhanced Structure**: Better organization of theme extension code
-- **Variant Support**: Ready-to-use enum for defining component variants (primary, secondary, etc.)
+- **Variant Support**: Ready-to-use enum for defining component variants with sensible defaults
 
 **Example Generated Template:**
 ```dart
 part of '../../ds_theme.dart';
 
 enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
   // TODO: Define variants for DSButton component
 }
 
@@ -394,18 +404,19 @@ String className = componentName.pascalCase; // "MyAwesomeButton"
 String kebabName = componentName.kebabCase; // "my-awesome-button"
 ```
 
-### Component Variants Usage (v0.0.2+)
+### Component Variants Usage (v0.0.3+)
 
 ```dart
-// Generated enum in theme extension
+// Generated enum in theme extension with default variants
 enum DSButtonVariants {
   primary,
   secondary,
   outline,
   ghost,
+  // TODO: Define variants for DSButton component
 }
 
-// Usage in component
+// Usage in component with automatic variant parameter
 class DSButton extends StatefulWidget {
   final DSButtonVariants variant;
   
@@ -416,4 +427,9 @@ class DSButton extends StatefulWidget {
   
   // ... rest of implementation
 }
+
+// Usage examples
+DSButton(variant: DSButtonVariants.primary)
+DSButton(variant: DSButtonVariants.secondary)
+DSButton() // Uses default primary variant
 ``` 

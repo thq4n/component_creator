@@ -13,6 +13,108 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for different naming conventions
 - Add interactive component creation wizard
 
+## [0.0.3] - 2025-06-20
+
+### Added
+- **Component Variants Support**: Added enum generation for component variants in theme extensions
+- **Enhanced Theme Extensions**: Each component now includes a `${className}Variants` enum for defining component variants (primary, secondary, etc.)
+- **Improved Template Structure**: Better organization of theme extension templates with variant support
+- **Automatic Variant Parameter**: Components now automatically include a variant parameter with default value
+- **Default Variants**: Generated enums include common variants (primary, secondary, outline, ghost)
+
+### Fixed
+- **Extension Formatting**: Fixed incorrect formatting when adding theme extensions to app theme file
+- **Template Consistency**: Improved consistency between generated component templates and theme extensions
+
+### Features
+- **Component Variants**: Automatically generates enum for component variants in theme extensions
+- **Enhanced Theme Integration**: Better structure for theme extensions with variant definitions
+- **Improved Code Organization**: Cleaner template structure for theme extensions
+- **Smart Defaults**: Components come with sensible default variants and parameters
+
+### Technical Details
+- **New Template Feature**: Theme extensions now include `${className}Variants` enum with default variants
+- **Enhanced Templates**: Updated `themeExtensionFileContent()` method to include variant enum with defaults
+- **Better Code Structure**: Improved organization of generated theme extension code
+- **Fixed Extension Logic**: Corrected extension formatting in app theme file updates
+
+### Generated Files
+For each component, the tool now generates:
+1. **Component Widget**: `lib/components/ds_{component_name}/ds_{component_name}.dart` (with variant parameter)
+2. **Theme Class**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.dart`
+3. **Theme Extension**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart` (with variants enum and defaults)
+4. **Theme Integration**: Updates `lib/theme/ds_theme.dart` with part directives
+5. **App Theme Integration**: Updates `lib/theme/base/app_theme/ds_app_theme.dart` with properly formatted extensions
+
+### Example Generated Component
+```dart
+class DSButton extends StatefulWidget {
+  final DSButtonVariants variant;
+  const DSButton({super.key, this.variant = DSButtonVariants.primary});
+
+  @override
+  State<DSButton> createState() => _DSButtonState();
+}
+```
+
+### Example Generated Theme Extension
+```dart
+part of '../../ds_theme.dart';
+
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+  // TODO: Define variants for DSButton component
+}
+
+class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
+  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+
+  @override
+  ThemeExtension<DSButtonThemeExt> copyWith() {
+    return DSButtonThemeExt();
+  }
+
+  @override
+  ThemeExtension<DSButtonThemeExt> lerp(
+    covariant ThemeExtension<DSButtonThemeExt>? other,
+    double t,
+  ) {
+    return DSButtonThemeExt();
+  }
+}
+```
+
+### Usage Examples
+```bash
+# Interactive mode
+component_creator
+
+# Direct mode
+component_creator Button
+component_creator "Custom Card"
+component_creator MyAwesomeWidget
+```
+
+### Breaking Changes
+- None
+
+### Known Issues
+- Limited to StatefulWidget components only
+- No support for custom template customization
+- Error messages are in Vietnamese only
+- No validation for component name format
+
+### Future Enhancements
+- Support for StatelessWidget components
+- Custom template configuration
+- Internationalization for error messages
+- Component name validation and suggestions
+- Interactive component creation wizard
+- Integration with popular IDEs
+
 ## [0.0.2] - 2025-06-20
 
 ### Added
@@ -31,7 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Better Code Structure**: Improved organization of generated theme extension code
 
 ### Generated Files
-For each component, the tool now generates:
+For each component, the tool generates:
 1. **Component Widget**: `lib/components/ds_{component_name}/ds_{component_name}.dart`
 2. **Theme Class**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.dart`
 3. **Theme Extension**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart` (now with variants enum)
@@ -207,9 +309,15 @@ dart pub global activate component_creator
 
 ## Version History
 
-### Version 0.0.2
+### Version 0.0.3
 - **Release Date**: 2025-06-20
 - **Status**: Latest release
+- **Features**: Component variants support, enhanced theme extensions, improved templates, automatic variant parameters
+- **Target**: Flutter developers using design systems with variant support
+
+### Version 0.0.2
+- **Release Date**: 2025-06-20
+- **Status**: Previous release
 - **Features**: Component variants support, enhanced theme extensions
 - **Target**: Flutter developers using design systems with variant support
 
@@ -238,6 +346,42 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## Release Notes
+
+### Version 0.0.3 Release Notes
+
+**What's New:**
+- 🎉 Component variants support with default variants
+- 🚀 Enhanced theme extensions with enum generation
+- 🎨 Better template structure for theme extensions
+- 📝 Improved code organization
+- 🔧 Fixed extension formatting in app theme files
+- ⚡ Components now include automatic variant parameter
+
+**Getting Started:**
+1. Install the tool: `dart pub global activate component_creator`
+2. Create your first component: `component_creator Button`
+3. Use the generated component with variants: `DSButton(variant: DSButtonVariants.primary)`
+4. Customize the generated code as needed
+
+**Breaking Changes:**
+- None
+
+**New Features:**
+- Component variants enum generation with default variants (primary, secondary, outline, ghost)
+- Enhanced theme extension templates
+- Better code organization
+- Automatic variant parameter in generated components
+- Fixed extension formatting in app theme files
+
+**Bug Fixes:**
+- Fixed incorrect formatting when adding theme extensions to app theme file
+- Improved template consistency between components and theme extensions
+
+**Next Steps:**
+- Add StatelessWidget support
+- Implement custom templates
+- Add internationalization
+- Create interactive wizard
 
 ### Version 0.0.2 Release Notes
 

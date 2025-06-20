@@ -17,6 +17,7 @@ A powerful CLI tool for automatically generating Flutter components with integra
 - 💡 **Interactive Mode**: User-friendly interactive component creation
 - 🛡️ **Error Handling**: Comprehensive error handling with helpful messages
 - 📚 **Comprehensive Documentation**: Detailed guides and API documentation
+- ⚡ **Smart Defaults**: Components come with automatic variant parameters and default variants
 
 ## 🚀 Quick Start
 
@@ -46,38 +47,38 @@ For a component named "Button", the tool creates:
 lib/
 ├── components/
 │   └── ds_button/
-│       └── ds_button.dart              # Main component widget
+│       └── ds_button.dart              # Main component widget (with variant parameter)
 └── theme/
     ├── ds_theme.dart                   # Updated with new parts
     ├── base/
     │   └── app_theme/
-    │       └── ds_app_theme.dart       # Updated with extensions
+    │       └── ds_app_theme.dart       # Updated with properly formatted extensions
     └── components/
         └── ds_button/
             ├── ds_button_theme.dart    # Theme class
-            └── ds_button_theme.ext.dart # Theme extension with variants
+            └── ds_button_theme.ext.dart # Theme extension with default variants
 ```
 
-## 🎨 Component Variants (v0.0.2+)
+## 🎨 Component Variants (v0.0.3+)
 
-Starting from version 0.0.2, each component automatically includes variants support:
+Starting from version 0.0.3, each component automatically includes variants support with smart defaults:
 
 ```dart
-// Generated enum in theme extension
-enum DSButtonVariants {
-  // TODO: Define variants for DSButton component
-}
-
-// Usage in component
+// Generated component with automatic variant parameter
 class DSButton extends StatefulWidget {
   final DSButtonVariants variant;
-  
-  const DSButton({
-    super.key,
-    this.variant = DSButtonVariants.primary,
-  });
+  const DSButton({super.key, this.variant = DSButtonVariants.primary});
   
   // ... implementation
+}
+
+// Generated enum with default variants
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+  // TODO: Define variants for DSButton component
 }
 ```
 
@@ -87,6 +88,8 @@ class DSButton extends StatefulWidget {
 - **Type Safety**: Compile-time checking for variant values
 - **Easy Maintenance**: Centralized variant definitions
 - **Flexible Styling**: Easy to add new variants or modify existing ones
+- **Smart Defaults**: Components come with common variants pre-defined
+- **Automatic Integration**: Variant parameter automatically included in generated components
 
 ## 📖 Documentation
 
@@ -236,6 +239,12 @@ class _DSButtonState extends DSStateBase<DSButton> {
         return ElevatedButton.styleFrom(
           backgroundColor: componentTheme.secondaryColor,
         );
+      case DSButtonVariants.outline:
+        return OutlinedButton.styleFrom(
+          side: BorderSide(color: componentTheme.outlineColor),
+        );
+      case DSButtonVariants.ghost:
+        return TextButton.styleFrom();
     }
   }
 }
@@ -252,6 +261,7 @@ enum DSButtonVariants {
   secondary,
   outline,
   ghost,
+  // TODO: Define variants for DSButton component
 }
 
 class DSButtonTheme {
@@ -297,7 +307,7 @@ After generation, you can customize:
 
 1. **Theme Properties**: Add colors, sizes, and other design tokens
 2. **Component Logic**: Implement the widget's build method
-3. **Component Variants**: Define variants in the generated enum
+3. **Component Variants**: Modify or add variants in the generated enum
 4. **Styling**: Add variant-specific styling logic
 
 ## 🐛 Troubleshooting
@@ -384,8 +394,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Version History
 
-### Version 0.0.2 (Current)
-- ✨ **Component Variants Support**: Added enum generation for component variants
+### Version 0.0.3 (Current)
+- ✨ **Component Variants Support**: Added enum generation for component variants with default variants
+- 🎨 **Enhanced Theme Extensions**: Better structure for theme extensions with variant definitions
+- 📝 **Improved Code Organization**: Cleaner template structure
+- ⚡ **Automatic Variant Parameters**: Components now include automatic variant parameters
+- 🔧 **Fixed Extension Formatting**: Corrected extension formatting in app theme files
+
+### Version 0.0.2
+- 🎉 **Component Variants Support**: Added enum generation for component variants
 - 🎨 **Enhanced Theme Extensions**: Better structure for theme extensions with variant definitions
 - 📝 **Improved Code Organization**: Cleaner template structure
 

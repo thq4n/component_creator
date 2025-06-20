@@ -8,7 +8,7 @@ This guide provides step-by-step instructions for using the Component Creator to
 - [Quick Start](#quick-start)
 - [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
-- [Component Variants (v0.0.2+)](#component-variants-v002)
+- [Component Variants (v0.0.3+)](#component-variants-v003)
 - [Generated Files](#generated-files)
 - [Customization](#customization)
 - [Troubleshooting](#troubleshooting)
@@ -66,7 +66,12 @@ You should see the interactive prompt asking for a component name.
    ls lib/theme/components/ds_button/
    ```
 
-4. **Customize the generated code** and start using your component!
+4. **Use the generated component with variants:**
+   ```dart
+   DSButton(variant: DSButtonVariants.primary)
+   DSButton(variant: DSButtonVariants.secondary)
+   DSButton() // Uses default primary variant
+   ```
 
 ## Basic Usage
 
@@ -137,56 +142,73 @@ class DSAppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       extensions: [
-        // Component theme extensions will be added here
+        // Component theme extensions will be added here with proper formatting
       ],
     );
   }
 }
 ```
 
-## Component Variants (v0.0.2+)
+## Component Variants (v0.0.3+)
 
 ### Overview
 
-Starting from version 0.0.2, the tool automatically generates component variants support. Each component now includes a variants enum that allows you to define different styles or states for your component.
+Starting from version 0.0.3, the tool automatically generates component variants support with smart defaults. Each component now includes a variants enum with common variants pre-defined and an automatic variant parameter.
 
 ### Generated Variants Enum
 
-For each component, the tool generates a `${className}Variants` enum in the theme extension file:
+For each component, the tool generates a `${className}Variants` enum in the theme extension file with default variants:
 
 ```dart
 // Generated in lib/theme/components/ds_button/ds_button_theme.ext.dart
 enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
   // TODO: Define variants for DSButton component
+}
+```
+
+### Automatic Variant Parameter
+
+Components now automatically include a variant parameter with a default value:
+
+```dart
+// Generated component with automatic variant parameter
+class DSButton extends StatefulWidget {
+  final DSButtonVariants variant;
+  const DSButton({super.key, this.variant = DSButtonVariants.primary});
+  
+  @override
+  State<DSButton> createState() => _DSButtonState();
 }
 ```
 
 ### Using Component Variants
 
-1. **Define your variants:**
+1. **Use the pre-defined variants:**
    ```dart
+   // The enum already includes common variants
    enum DSButtonVariants {
      primary,
      secondary,
      outline,
      ghost,
-     danger,
+     // TODO: Define variants for DSButton component
    }
    ```
 
-2. **Update your component to use variants:**
+2. **Use the component with variants:**
    ```dart
-   class DSButton extends StatefulWidget {
-     final DSButtonVariants variant;
-     
-     const DSButton({
-       super.key,
-       this.variant = DSButtonVariants.primary,
-     });
-     
-     @override
-     State<DSButton> createState() => _DSButtonState();
-   }
+   // Use with specific variant
+   DSButton(variant: DSButtonVariants.primary)
+   DSButton(variant: DSButtonVariants.secondary)
+   DSButton(variant: DSButtonVariants.outline)
+   DSButton(variant: DSButtonVariants.ghost)
+   
+   // Use default variant
+   DSButton() // Automatically uses DSButtonVariants.primary
    ```
 
 3. **Implement variant-specific styling:**
@@ -220,22 +242,33 @@ enum DSButtonVariants {
            );
          case DSButtonVariants.ghost:
            return TextButton.styleFrom();
-         case DSButtonVariants.danger:
-           return ElevatedButton.styleFrom(
-             backgroundColor: componentTheme.dangerColor,
-           );
        }
      }
    }
    ```
 
-4. **Update your theme class:**
+4. **Add custom variants to the enum:**
+   ```dart
+   enum DSButtonVariants {
+     primary,
+     secondary,
+     outline,
+     ghost,
+     danger,    // Add your custom variants
+     success,
+     warning,
+   }
+   ```
+
+5. **Update your theme class:**
    ```dart
    class DSButtonTheme {
      final Color primaryColor = Colors.blue;
      final Color secondaryColor = Colors.grey;
      final Color outlineColor = Colors.blue;
      final Color dangerColor = Colors.red;
+     final Color successColor = Colors.green;
+     final Color warningColor = Colors.orange;
    }
    ```
 
@@ -246,6 +279,8 @@ enum DSButtonVariants {
 - **Easy Maintenance**: Centralized variant definitions
 - **Flexible Styling**: Easy to add new variants or modify existing ones
 - **Better UX**: Consistent component behavior across variants
+- **Smart Defaults**: Components come with common variants pre-defined
+- **Automatic Integration**: Variant parameter automatically included in generated components
 
 ## Generated Files
 
@@ -255,7 +290,7 @@ For each component, the tool generates the following files:
 
 **Location**: `lib/components/ds_{component_name}/ds_{component_name}.dart`
 
-**Content**: StatefulWidget with theme integration
+**Content**: StatefulWidget with theme integration and automatic variant parameter
 
 ```dart
 import '../../theme/ds_theme.dart';
@@ -263,7 +298,8 @@ import 'package:flutter/material.dart';
 import 'package:design_system_project/base/ds_base.dart';
 
 class DSButton extends StatefulWidget {
-  const DSButton({super.key});
+  final DSButtonVariants variant;
+  const DSButton({super.key, this.variant = DSButtonVariants.primary});
 
   @override
   State<DSButton> createState() => _DSButtonState();
@@ -294,16 +330,20 @@ class DSButtonTheme {
 }
 ```
 
-### 3. Theme Extension (v0.0.2+)
+### 3. Theme Extension (v0.0.3+)
 
 **Location**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart`
 
-**Content**: Theme extension with variants enum
+**Content**: Theme extension with variants enum and default variants
 
 ```dart
 part of '../../ds_theme.dart';
 
 enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
   // TODO: Define variants for DSButton component
 }
 
@@ -341,7 +381,7 @@ part 'components/ds_button/ds_button_theme.ext.dart';
 
 **Updates**: `lib/theme/base/app_theme/ds_app_theme.dart`
 
-**Adds**: Theme extension to the extensions array
+**Adds**: Theme extension to the extensions array with proper formatting
 
 ```dart
 extensions: [
@@ -380,12 +420,35 @@ After generation, you can customize the code:
    }
    ```
 
-3. **Define component variants:**
+3. **Add custom variants to the enum:**
    ```dart
    enum DSButtonVariants {
      primary,
      secondary,
      outline,
+     ghost,
+     danger,    // Your custom variants
+     success,
+   }
+   ```
+
+4. **Implement variant-specific styling:**
+   ```dart
+   Widget _buildButton() {
+     switch (widget.variant) {
+       case DSButtonVariants.primary:
+         return ElevatedButton(/* primary styling */);
+       case DSButtonVariants.secondary:
+         return ElevatedButton(/* secondary styling */);
+       case DSButtonVariants.outline:
+         return OutlinedButton(/* outline styling */);
+       case DSButtonVariants.ghost:
+         return TextButton(/* ghost styling */);
+       case DSButtonVariants.danger:
+         return ElevatedButton(/* danger styling */);
+       case DSButtonVariants.success:
+         return ElevatedButton(/* success styling */);
+     }
    }
    ```
 
@@ -429,7 +492,7 @@ dart pub global activate dart_style
 
 #### 3. Component not appearing in theme
 
-**Solution**: Check that the theme extension is added to the extensions array in `ds_app_theme.dart`.
+**Solution**: Check that the theme extension is added to the extensions array in `ds_app_theme.dart`. The tool now properly formats extensions.
 
 #### 4. Import errors
 
@@ -473,9 +536,10 @@ print('File path: ${file.path}');
 
 ### 3. Component Variants
 
-- Start with common variants (primary, secondary)
-- Add variants as needed for your design system
+- Start with the provided default variants (primary, secondary, outline, ghost)
+- Add custom variants as needed for your design system
 - Keep variant names consistent across components
+- Use the automatic variant parameter for consistency
 
 ### 4. File Structure
 
@@ -540,6 +604,12 @@ class _DSButtonState extends DSStateBase<DSButton> {
           backgroundColor: componentTheme.secondaryColor,
           foregroundColor: componentTheme.secondaryTextColor,
         );
+      case DSButtonVariants.outline:
+        return OutlinedButton.styleFrom(
+          side: BorderSide(color: componentTheme.outlineColor),
+        );
+      case DSButtonVariants.ghost:
+        return TextButton.styleFrom();
     }
   }
 }
@@ -554,6 +624,10 @@ part of '../../ds_theme.dart';
 enum DSButtonVariants {
   primary,
   secondary,
+  outline,
+  ghost,
+  danger,    // Custom variant
+  success,   // Custom variant
 }
 
 class DSButtonTheme {
@@ -561,6 +635,9 @@ class DSButtonTheme {
   final Color primaryTextColor = Colors.white;
   final Color secondaryColor = Colors.grey;
   final Color secondaryTextColor = Colors.black;
+  final Color outlineColor = Colors.blue;
+  final Color dangerColor = Colors.red;
+  final Color successColor = Colors.green;
 }
 
 class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
@@ -581,4 +658,5 @@ class DSButtonThemeExt extends ThemeExtension<DSButtonThemeExt> {
 }
 ```
 
+This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with component variants support and automatic variant parameters. 
 This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with component variants support. 
