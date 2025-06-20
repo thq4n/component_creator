@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:design_system_project/base/ds_base.dart';
 
 class $className extends StatefulWidget {
-  const $className({super.key});
+  final ${className}Variants variant;
+  const $className({super.key, this.variant = ${className}Variants.primary});
 
   @override
   State<$className> createState() => _${className}State();
@@ -51,6 +52,10 @@ class ${className}Theme {
 part of '../../ds_theme.dart';
 
 enum ${className}Variants {
+  primary,
+  secondary,
+  outline,
+  ghost,
   // TODO: Define variants for $className component
 }
 

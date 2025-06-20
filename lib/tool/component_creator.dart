@@ -193,7 +193,7 @@ class ComponentCreator {
     final updatedExtensions =
         extensionsContent.trim().isEmpty
             ? '  $extInstanceName'
-            : '$extensionsContent,\n  $extInstanceName';
+            : '$extensionsContent $extInstanceName,';
 
     // Thay thế đoạn cũ với đoạn mới
     final updatedContent = content.replaceRange(
