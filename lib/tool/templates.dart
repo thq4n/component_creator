@@ -2,23 +2,46 @@ import 'package:component_creator/utils/string_utils.dart';
 
 class Templates {
   /// Template StatefulWidget component
-  static String statefulWidget(String className, String snakeFileName) {
-    return '''
+  static String statefulWidget(
+    String className,
+    String snakeFileName, [
+    List<String>? customVariants,
+  ]) {
+    final hasVariants = customVariants?.isNotEmpty ?? false;
+
+    final variantField =
+        hasVariants
+            ? '''
+  final ${className}Variants variant;
+'''
+            : '';
+
+    final variantParameter =
+        hasVariants
+            ? '''
+    this.variant = ${className}Variants.primary,
+'''
+            : '';
+
+    return '''import 'package:flutter/material.dart';
+
+import '../../base/ds_base.dart';
 import '../../theme/ds_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:design_system_project/base/ds_base.dart';
 
 class $className extends StatefulWidget {
-  final ${className}Variants variant;
-  const $className({super.key, this.variant = ${className}Variants.primary});
+$variantField
+  const $className({
+    super.key,$variantParameter
+  });
 
   @override
   State<$className> createState() => _${className}State();
 }
 
 class _${className}State extends DSStateBase<$className> {
-  late ${className}Theme componentTheme =
-      theme.extension<${className}ThemeExtension>()!.${className.camelCase}Theme;
+  late ${className}Theme componentTheme = theme
+      .extension<${className}ThemeExtension>()!
+      .${className.camelCase}Theme;
 
   @override
   Widget build(BuildContext context) {
@@ -47,20 +70,33 @@ class ${className}Theme {
 ''';
   }
 
-  static String themeExtensionFileContent(String className) {
+  static String themeExtensionFileContent(
+    String className, [
+    List<String>? customVariants,
+  ]) {
+    final variants = customVariants ?? [];
+    final hasVariants = variants.isNotEmpty;
+    final variantsString =
+        hasVariants ? variants.map((v) => '  $v,').join('\n') : '';
+
+    final enumSection =
+        hasVariants
+            ? '''
+enum ${className}Variants {
+$variantsString
+}
+
+'''
+            : '';
+
     return '''
 part of '../../ds_theme.dart';
 
-enum ${className}Variants {
-  primary,
-  secondary,
-  outline,
-  ghost,
-  // TODO: Define variants for $className component
-}
-
+$enumSection
 class ${className}ThemeExtension extends ThemeExtension<${className}ThemeExtension> {
-  final ${className}Theme ${className.camelCase}Theme = ${className}Theme();
+  ${className}Theme get ${className.camelCase}Theme => ${className}Theme(
+        // TODO: Configure theme properties for $className component
+      );
 
   @override
   ThemeExtension<${className}ThemeExtension> copyWith() {

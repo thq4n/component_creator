@@ -8,7 +8,7 @@ This guide provides step-by-step instructions for using the Component Creator to
 - [Quick Start](#quick-start)
 - [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
-- [Component Variants (v0.0.5+)](#component-variants-v005)
+- [Interactive Component Variants (v0.0.6+)](#interactive-component-variants-v006)
 - [Generated Files](#generated-files)
 - [Customization](#customization)
 - [Breaking Changes (v0.0.4)](#breaking-changes-v004)
@@ -48,8 +48,6 @@ component_creator --help
 component_creator
 ```
 
-You should see the interactive prompt asking for a component name.
-
 ## Quick Start
 
 1. **Navigate to your Flutter project:**
@@ -62,17 +60,28 @@ You should see the interactive prompt asking for a component name.
    component_creator Button
    ```
 
-3. **Check the generated files:**
+3. **Follow the interactive prompts:**
+   ```
+   Nhập tên component: Button
+   Bạn có muốn tạo variants không? (y/n): y
+   ```
+
+4. **Check the generated files:**
    ```bash
    ls lib/components/ds_button/
    ls lib/theme/components/ds_button/
    ```
 
-4. **Use the generated component with variants:**
+5. **Use the generated component:**
    ```dart
+   // With variants (if chosen)
    DSButton(variant: DSButtonVariants.primary)
    DSButton(variant: DSButtonVariants.secondary)
    DSButton() // Uses default primary variant
+
+   // Without variants (if not chosen)
+   DSButton()
+   DSButton(key: Key('my-button'))
    ```
 
 ## Basic Usage
@@ -85,9 +94,13 @@ Run the tool without arguments to enter interactive mode:
 component_creator
 ```
 
-You'll be prompted to enter the component name:
+You'll be prompted for:
+1. **Component name**: Enter the name of your component
+2. **Variant choice**: Choose whether to create variants (y/n)
+
 ```
-Nhập tên component: Button
+Nhập tên component: MyAwesomeWidget
+Bạn có muốn tạo variants không? (y/n): n
 ```
 
 ### Direct Mode
@@ -99,6 +112,8 @@ component_creator Button
 component_creator "Custom Card"
 component_creator MyAwesomeWidget
 ```
+
+The tool will still prompt for variant choice in direct mode.
 
 ### Naming Conventions
 
@@ -151,74 +166,79 @@ class DSAppTheme {
 }
 ```
 
-## Component Variants (v0.0.5+)
+## Interactive Component Variants (v0.0.6+)
 
 ### Overview
 
-Starting from version 0.0.5, the tool automatically generates component variants support with smart defaults and consistent naming. Each component now includes a variants enum with common variants pre-defined, an automatic variant parameter, consistent theme extension naming, and correct template references.
+Starting from version 0.0.6, the tool now offers **interactive component variants creation** with flexible generation options. Users can choose whether to create variants for their components, providing more granular control over the generation process.
 
-### Generated Variants Enum
+### Interactive Variant Choice
 
-For each component, the tool generates a `${className}Variants` enum in the theme extension file with default variants:
+When you run the tool, you'll be prompted to choose whether to create variants:
 
-```dart
-// Generated in lib/theme/components/ds_button/ds_button_theme.ext.dart
-enum DSButtonVariants {
-  primary,
-  secondary,
-  outline,
-  ghost,
-  // TODO: Define variants for DSButton component
-}
+```bash
+component_creator
+# Enter component name: Button
+# Bạn có muốn tạo variants không? (y/n): y
 ```
 
-### Automatic Variant Parameter
-
-Components now automatically include a variant parameter with a default value:
+### Generated Component (with variants chosen)
 
 ```dart
 // Generated component with automatic variant parameter
 class DSButton extends StatefulWidget {
   final DSButtonVariants variant;
-  const DSButton({super.key, this.variant = DSButtonVariants.primary});
+  const DSButton({
+    super.key,
+    this.variant = DSButtonVariants.primary,
+  });
   
   @override
   State<DSButton> createState() => _DSButtonState();
 }
-```
 
-### Consistent Theme Extension Naming
+// Generated enum with default variants
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+}
 
-Theme extension classes now follow consistent naming conventions:
-
-```dart
 // Generated theme extension with consistent naming
 class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
-  final DSButtonTheme dSButtonTheme = DSButtonTheme();
-  
+  DSButtonTheme get dSButtonTheme => DSButtonTheme(
+        // TODO: Configure theme properties for DSButton component
+      );
   // ... implementation
 }
 ```
 
-### Correct Template References (v0.0.5+)
-
-The StatefulWidget template now correctly references theme extensions:
+### Generated Component (without variants chosen)
 
 ```dart
-// Generated component with correct theme extension reference
-class _DSButtonState extends DSStateBase<DSButton> {
-  late DSButtonTheme componentTheme =
-      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme; // Fixed reference
-
+// Generated component without variant parameter (simpler structure)
+class DSButton extends StatefulWidget {
+  const DSButton({
+    super.key,
+  });
+  
   @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
+  State<DSButton> createState() => _DSButtonState();
+}
+
+// Generated theme extension without variants enum
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  DSButtonTheme get dSButtonTheme => DSButtonTheme(
+        // TODO: Configure theme properties for DSButton component
+      );
+  // ... implementation
 }
 ```
 
 ### Using Component Variants
 
+#### With Variants (if chosen)
 1. **Use the pre-defined variants:**
    ```dart
    // The enum already includes common variants
@@ -227,7 +247,6 @@ class _DSButtonState extends DSStateBase<DSButton> {
      secondary,
      outline,
      ghost,
-     // TODO: Define variants for DSButton component
    }
    ```
 
@@ -246,8 +265,9 @@ class _DSButtonState extends DSStateBase<DSButton> {
 3. **Implement variant-specific styling:**
    ```dart
    class _DSButtonState extends DSStateBase<DSButton> {
-     late DSButtonTheme componentTheme =
-         theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
+     late DSButtonTheme componentTheme = theme
+         .extension<DSButtonThemeExtension>()!
+         .dSButtonTheme;
 
      @override
      Widget build(BuildContext context) {
@@ -304,15 +324,21 @@ class _DSButtonState extends DSStateBase<DSButton> {
    }
    ```
 
-### Benefits of Component Variants
+#### Without Variants (if not chosen)
+```dart
+// Simple component without variants
+DSButton()
+DSButton(key: Key('my-button'))
+DSButton(child: Text('Click me'))
+```
 
-- **Consistent Design**: All variants follow the same design system
-- **Type Safety**: Compile-time checking for variant values
-- **Easy Maintenance**: Centralized variant definitions
-- **Flexible Styling**: Easy to add new variants or modify existing ones
-- **Better UX**: Consistent component behavior across variants
-- **Smart Defaults**: Components come with common variants pre-defined
-- **Automatic Integration**: Variant parameter automatically included in generated components
+### Benefits of Interactive Variants
+
+- **User Choice**: Decide whether your component needs variants
+- **Flexible Generation**: Generate components with or without variants
+- **Simplified Components**: Create simple components without unnecessary complexity
+- **Smart Defaults**: When variants are chosen, common variants are automatically included
+- **Better UX**: More granular control over component generation process
 - **Consistent Naming**: Theme extension classes follow clear naming conventions
 - **Template Consistency**: All templates use consistent theme extension references
 
@@ -324,24 +350,58 @@ For each component, the tool generates the following files:
 
 **Location**: `lib/components/ds_{component_name}/ds_{component_name}.dart`
 
-**Content**: StatefulWidget with theme integration, automatic variant parameter, consistent naming, and correct theme extension reference
+**Content**: StatefulWidget with theme integration, optional variant parameter, consistent naming, and correct theme extension reference
 
+#### With Variants
 ```dart
-import '../../theme/ds_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:design_system_project/base/ds_base.dart';
+
+import '../../base/ds_base.dart';
+import '../../theme/ds_theme.dart';
 
 class DSButton extends StatefulWidget {
   final DSButtonVariants variant;
-  const DSButton({super.key, this.variant = DSButtonVariants.primary});
+  const DSButton({
+    super.key,
+    this.variant = DSButtonVariants.primary,
+  });
 
   @override
   State<DSButton> createState() => _DSButtonState();
 }
 
 class _DSButtonState extends DSStateBase<DSButton> {
-  late DSButtonTheme componentTheme =
-      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
+  late DSButtonTheme componentTheme = theme
+      .extension<DSButtonThemeExtension>()!
+      .dSButtonTheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+```
+
+#### Without Variants
+```dart
+import 'package:flutter/material.dart';
+
+import '../../base/ds_base.dart';
+import '../../theme/ds_theme.dart';
+
+class DSButton extends StatefulWidget {
+  const DSButton({
+    super.key,
+  });
+
+  @override
+  State<DSButton> createState() => _DSButtonState();
+}
+
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme = theme
+      .extension<DSButtonThemeExtension>()!
+      .dSButtonTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -364,12 +424,13 @@ class DSButtonTheme {
 }
 ```
 
-### 3. Theme Extension (v0.0.5+)
+### 3. Theme Extension (v0.0.6+)
 
 **Location**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart`
 
-**Content**: Theme extension with variants enum, default variants, and consistent naming
+**Content**: Theme extension with optional variants enum and consistent naming
 
+#### With Variants
 ```dart
 part of '../../ds_theme.dart';
 
@@ -378,11 +439,36 @@ enum DSButtonVariants {
   secondary,
   outline,
   ghost,
-  // TODO: Define variants for DSButton component
 }
 
 class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
-  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+  DSButtonTheme get dSButtonTheme => DSButtonTheme(
+        // TODO: Configure theme properties for DSButton component
+      );
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
+  }
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
+    double t,
+  ) {
+    return DSButtonThemeExtension();
+  }
+}
+```
+
+#### Without Variants
+```dart
+part of '../../ds_theme.dart';
+
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  DSButtonTheme get dSButtonTheme => DSButtonTheme(
+        // TODO: Configure theme properties for DSButton component
+      );
 
   @override
   ThemeExtension<DSButtonThemeExtension> copyWith() {
@@ -454,7 +540,7 @@ After generation, you can customize the code:
    }
    ```
 
-3. **Add custom variants to the enum:**
+3. **Add custom variants to the enum (if variants were chosen):**
    ```dart
    enum DSButtonVariants {
      primary,
@@ -466,7 +552,7 @@ After generation, you can customize the code:
    }
    ```
 
-4. **Implement variant-specific styling:**
+4. **Implement variant-specific styling (if variants were chosen):**
    ```dart
    Widget _buildButton() {
      switch (widget.variant) {
@@ -678,6 +764,10 @@ dependencies:
 
 **Solution**: If you have components generated with v0.0.4 or earlier, regenerate them with v0.0.5+ to get the correct theme extension references.
 
+#### 7. Variant-related errors
+
+**Solution**: If you're using components generated with v0.0.6+ and variants were not chosen, make sure you're not trying to use variant parameters that don't exist.
+
 ### Debug Mode
 
 For detailed debugging, you can modify the tool to add more verbose logging:
@@ -690,8 +780,8 @@ print('File path: ${file.path}');
 
 ### Getting Help
 
-- Check the [API Documentation](API.md) for detailed method descriptions
-- Review the [README.md](../README.md) for project overview
+- Check the [Usage Guide](doc/USAGE_GUIDE.md) for detailed instructions
+- Review the [API Documentation](doc/API.md) for technical details
 - Open an issue on GitHub for bugs or feature requests
 
 ## Best Practices
@@ -710,10 +800,11 @@ print('File path: ${file.path}');
 
 ### 3. Component Variants
 
-- Start with the provided default variants (primary, secondary, outline, ghost)
+- Choose variants only when your component needs different styles
+- Start with the provided default variants (primary, secondary, outline, ghost) if variants are chosen
 - Add custom variants as needed for your design system
 - Keep variant names consistent across components
-- Use the automatic variant parameter for consistency
+- Use the automatic variant parameter for consistency when variants are chosen
 
 ### 4. File Structure
 
@@ -731,6 +822,7 @@ print('File path: ${file.path}');
 
 - When upgrading to v0.0.4+, follow the migration guide
 - When upgrading to v0.0.5+, regenerate components for correct template references
+- When upgrading to v0.0.6+, take advantage of the new interactive variant choice
 - Test components after migration
 - Update any custom code that references old naming
 
@@ -740,9 +832,15 @@ print('File path: ${file.path}');
 - Regenerate components when upgrading to get the latest template fixes
 - Verify theme extension references in generated components
 
+### 8. Interactive Variant Choice
+
+- Choose variants only when your component needs different styles
+- Use the interactive choice to create simpler components when variants aren't needed
+- Take advantage of the flexible generation options
+
 ## Examples
 
-### Complete Button Component
+### Complete Button Component (with variants)
 
 ```dart
 // lib/components/ds_button/ds_button.dart
@@ -753,13 +851,13 @@ import 'package:design_system_project/base/ds_base.dart';
 class DSButton extends StatefulWidget {
   final String text;
   final VoidCallback? onPressed;
-  final DSButtonVariants variant;
+  final DSButtonVariants variant; // Only if variants were chosen
   
   const DSButton({
     super.key,
     required this.text,
     this.onPressed,
-    this.variant = DSButtonVariants.primary,
+    this.variant = DSButtonVariants.primary, // Only if variants were chosen
   });
 
   @override
@@ -780,16 +878,15 @@ class _DSButtonState extends DSStateBase<DSButton> {
   }
   
   ButtonStyle _getButtonStyle() {
+    // Only if variants were chosen
     switch (widget.variant) {
       case DSButtonVariants.primary:
         return ElevatedButton.styleFrom(
           backgroundColor: componentTheme.primaryColor,
-          foregroundColor: componentTheme.primaryTextColor,
         );
       case DSButtonVariants.secondary:
         return ElevatedButton.styleFrom(
           backgroundColor: componentTheme.secondaryColor,
-          foregroundColor: componentTheme.secondaryTextColor,
         );
       case DSButtonVariants.outline:
         return OutlinedButton.styleFrom(
@@ -802,7 +899,46 @@ class _DSButtonState extends DSStateBase<DSButton> {
 }
 ```
 
-### Complete Theme Extension
+### Complete Button Component (without variants)
+
+```dart
+// lib/components/ds_button/ds_button.dart
+import '../../theme/ds_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:design_system_project/base/ds_base.dart';
+
+class DSButton extends StatefulWidget {
+  final String text;
+  final VoidCallback? onPressed;
+  
+  const DSButton({
+    super.key,
+    required this.text,
+    this.onPressed,
+  });
+
+  @override
+  State<DSButton> createState() => _DSButtonState();
+}
+
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme =
+      theme.extension<DSButtonThemeExtension>()!.dSButtonTheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: componentTheme.backgroundColor,
+      ),
+      onPressed: widget.onPressed,
+      child: Text(widget.text),
+    );
+  }
+}
+```
+
+### Complete Theme Extension (with variants)
 
 ```dart
 // lib/theme/components/ds_button/ds_button_theme.ext.dart
@@ -813,22 +949,12 @@ enum DSButtonVariants {
   secondary,
   outline,
   ghost,
-  danger,    // Custom variant
-  success,   // Custom variant
-}
-
-class DSButtonTheme {
-  final Color primaryColor = Colors.blue;
-  final Color primaryTextColor = Colors.white;
-  final Color secondaryColor = Colors.grey;
-  final Color secondaryTextColor = Colors.black;
-  final Color outlineColor = Colors.blue;
-  final Color dangerColor = Colors.red;
-  final Color successColor = Colors.green;
 }
 
 class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
-  final DSButtonTheme dSButtonTheme = DSButtonTheme();
+  DSButtonTheme get dSButtonTheme => DSButtonTheme(
+        // TODO: Configure theme properties for DSButton component
+      );
 
   @override
   ThemeExtension<DSButtonThemeExtension> copyWith() {
@@ -845,4 +971,30 @@ class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
 }
 ```
 
-This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with component variants support, automatic variant parameters, consistent naming conventions, and the latest bug fixes for template consistency. 
+### Complete Theme Extension (without variants)
+
+```dart
+// lib/theme/components/ds_button/ds_button_theme.ext.dart
+part of '../../ds_theme.dart';
+
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  DSButtonTheme get dSButtonTheme => DSButtonTheme(
+        // TODO: Configure theme properties for DSButton component
+      );
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
+  }
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
+    double t,
+  ) {
+    return DSButtonThemeExtension();
+  }
+}
+```
+
+This usage guide covers all aspects of using the Component Creator tool, from basic installation to advanced customization with interactive component variants support, flexible generation options, consistent naming conventions, and the latest bug fixes for template consistency. 

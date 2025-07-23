@@ -10,6 +10,7 @@ class ComponentCreator {
 
   void run(List<String> args) {
     String? componentName;
+    List<String> customVariants = [];
 
     if (args.isNotEmpty) {
       componentName = args[0];
@@ -22,13 +23,21 @@ class ComponentCreator {
       }
     }
 
+    // Hỏi về custom variants
+    stdout.write('Bạn có muốn tạo variants không? (y/n): ');
+    final createVariants = stdin.readLineSync()?.toLowerCase().trim();
+
+    if (createVariants == 'y' || createVariants == 'yes') {
+      customVariants = ['primary', 'secondary', 'outline', 'ghost'];
+    }
+
     final rawName = componentName.trim();
     final className = 'DS$rawName';
     final snakeName = _toSnakeCaseWithPrefix(rawName);
 
     try {
-      _createComponentWidget(className, snakeName);
-      _createThemeComponent(className, snakeName);
+      _createComponentWidget(className, snakeName, customVariants);
+      _createThemeComponent(className, snakeName, customVariants);
       _updateDsThemeFile(snakeName);
       _updateDsAppThemeExtensions(className);
       _formatCode();
@@ -39,7 +48,11 @@ class ComponentCreator {
     }
   }
 
-  void _createComponentWidget(String className, String snakeName) {
+  void _createComponentWidget(
+    String className,
+    String snakeName,
+    List<String> customVariants,
+  ) {
     final componentDir = Directory('${componentsDir.path}/$snakeName');
     FileUtils.createDirIfNotExist(componentDir);
 
@@ -47,7 +60,7 @@ class ComponentCreator {
     if (!FileUtils.fileExists(componentFilePath)) {
       FileUtils.writeFile(
         componentFilePath,
-        Templates.statefulWidget(className, snakeName),
+        Templates.statefulWidget(className, snakeName, customVariants),
       );
       print('Tạo file component widget: $componentFilePath');
     } else {
@@ -55,7 +68,11 @@ class ComponentCreator {
     }
   }
 
-  void _createThemeComponent(String className, String snakeName) {
+  void _createThemeComponent(
+    String className,
+    String snakeName,
+    List<String> customVariants,
+  ) {
     final themeComponentDir = Directory(
       '${themeComponentsDir.path}/$snakeName',
     );
@@ -74,7 +91,7 @@ class ComponentCreator {
     if (!FileUtils.fileExists(themeExtFilePath)) {
       FileUtils.writeFile(
         themeExtFilePath,
-        Templates.themeExtensionFileContent(className),
+        Templates.themeExtensionFileContent(className, customVariants),
       );
       print('Tạo file theme extension: $themeExtFilePath');
     } else {

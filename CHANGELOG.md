@@ -13,6 +13,188 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for different naming conventions
 - Add interactive component creation wizard
 
+## [0.0.6] - 2025-06-20
+
+### Added
+- **Interactive Component Variants Creation**: Added user choice for creating component variants
+- **Flexible Variant Generation**: Components can now be created with or without variants
+- **Enhanced User Experience**: Interactive prompts for better component customization
+- **Improved Template Flexibility**: Templates now support optional variant generation
+- **Better Code Organization**: Cleaner template structure with conditional variant support
+
+### Features
+- **Interactive Variant Choice**: Users can choose whether to create variants for their components
+- **Conditional Variant Generation**: Components are generated with or without variants based on user choice
+- **Smart Default Variants**: When variants are chosen, default variants (primary, secondary, outline, ghost) are automatically included
+- **Flexible Template System**: Templates now support both variant and non-variant component generation
+- **Enhanced User Control**: More granular control over component generation process
+
+### Technical Details
+- **Interactive Prompts**: Added user prompts for variant creation choice
+- **Template Updates**: Updated `statefulWidget()` and `themeExtensionFileContent()` methods to support optional variants
+- **Method Signatures**: Enhanced method signatures to accept optional custom variants parameter
+- **Conditional Logic**: Added conditional logic for variant field and parameter generation
+- **Improved Code Structure**: Better organization of template generation with conditional sections
+
+### Generated Files
+For each component, the tool now generates:
+1. **Component Widget**: `lib/components/ds_{component_name}/ds_{component_name}.dart` (with optional variant parameter)
+2. **Theme Class**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.dart`
+3. **Theme Extension**: `lib/theme/components/ds_{component_name}/ds_{component_name}_theme.ext.dart` (with optional variants enum)
+4. **Theme Integration**: Updates `lib/theme/ds_theme.dart` with part directives
+5. **App Theme Integration**: Updates `lib/theme/base/app_theme/ds_app_theme.dart` with properly formatted extensions
+
+### Example Generated Component (with variants)
+```dart
+import 'package:flutter/material.dart';
+
+import '../../base/ds_base.dart';
+import '../../theme/ds_theme.dart';
+
+class DSButton extends StatefulWidget {
+  final DSButtonVariants variant;
+  const DSButton({
+    super.key,
+    this.variant = DSButtonVariants.primary,
+  });
+
+  @override
+  State<DSButton> createState() => _DSButtonState();
+}
+
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme = theme
+      .extension<DSButtonThemeExtension>()!
+      .dSButtonTheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+```
+
+### Example Generated Component (without variants)
+```dart
+import 'package:flutter/material.dart';
+
+import '../../base/ds_base.dart';
+import '../../theme/ds_theme.dart';
+
+class DSButton extends StatefulWidget {
+  const DSButton({
+    super.key,
+  });
+
+  @override
+  State<DSButton> createState() => _DSButtonState();
+}
+
+class _DSButtonState extends DSStateBase<DSButton> {
+  late DSButtonTheme componentTheme = theme
+      .extension<DSButtonThemeExtension>()!
+      .dSButtonTheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+```
+
+### Example Generated Theme Extension (with variants)
+```dart
+part of '../../ds_theme.dart';
+
+enum DSButtonVariants {
+  primary,
+  secondary,
+  outline,
+  ghost,
+}
+
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  DSButtonTheme get dSButtonTheme => DSButtonTheme(
+        // TODO: Configure theme properties for DSButton component
+      );
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
+  }
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
+    double t,
+  ) {
+    return DSButtonThemeExtension();
+  }
+}
+```
+
+### Example Generated Theme Extension (without variants)
+```dart
+part of '../../ds_theme.dart';
+
+class DSButtonThemeExtension extends ThemeExtension<DSButtonThemeExtension> {
+  DSButtonTheme get dSButtonTheme => DSButtonTheme(
+        // TODO: Configure theme properties for DSButton component
+      );
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> copyWith() {
+    return DSButtonThemeExtension();
+  }
+
+  @override
+  ThemeExtension<DSButtonThemeExtension> lerp(
+    covariant ThemeExtension<DSButtonThemeExtension>? other,
+    double t,
+  ) {
+    return DSButtonThemeExtension();
+  }
+}
+```
+
+### Usage Examples
+```bash
+# Interactive mode with variant choice
+component_creator
+# Enter component name when prompted
+# Choose whether to create variants (y/n)
+
+# Direct mode (will prompt for variants)
+component_creator Button
+component_creator "Custom Card"
+component_creator MyAwesomeWidget
+```
+
+### Interactive Flow
+1. **Component Name Input**: User enters component name
+2. **Variant Choice Prompt**: Tool asks "Bạn có muốn tạo variants không? (y/n):"
+3. **Conditional Generation**: Based on user choice:
+   - **Yes**: Generates component with variants enum and variant parameter
+   - **No**: Generates component without variants (simpler structure)
+4. **File Generation**: Creates all necessary files with appropriate structure
+
+### Breaking Changes
+- None (backward compatible)
+
+### Known Issues
+- Limited to StatefulWidget components only
+- No support for custom template customization
+- Error messages are in Vietnamese only
+- No validation for component name format
+
+### Future Enhancements
+- Support for StatelessWidget components
+- Custom template configuration
+- Internationalization for error messages
+- Component name validation and suggestions
+- Interactive component creation wizard
+- Integration with popular IDEs
+
 ## [0.0.5] - 2025-06-20
 
 ### Fixed
@@ -329,6 +511,7 @@ component_creator MyAwesomeWidget
 - Custom template configuration
 - Internationalization for error messages
 - Component name validation and suggestions
+- Support for component variants
 - Interactive component creation wizard
 - Integration with popular IDEs
 
@@ -526,9 +709,15 @@ dart pub global activate component_creator
 
 ## Version History
 
-### Version 0.0.5
+### Version 0.0.6
 - **Release Date**: 2025-06-20
 - **Status**: Latest release
+- **Features**: Interactive component variants creation, flexible variant generation, enhanced user experience
+- **Target**: Flutter developers using design systems with flexible component generation
+
+### Version 0.0.5
+- **Release Date**: 2025-06-20
+- **Status**: Previous release
 - **Features**: Bug fix for StatefulWidget template, template consistency, improved test coverage
 - **Target**: Flutter developers using design systems with consistent naming conventions
 
@@ -575,6 +764,44 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## Release Notes
+
+### Version 0.0.6 Release Notes
+
+**What's New:**
+- 🎯 **Interactive Component Variants Creation**: Added user choice for creating component variants
+- 🔧 **Flexible Variant Generation**: Components can now be created with or without variants
+- 🎨 **Enhanced User Experience**: Interactive prompts for better component customization
+- 📝 **Improved Template Flexibility**: Templates now support optional variant generation
+- 🚀 **Better Code Organization**: Cleaner template structure with conditional variant support
+
+**Getting Started:**
+1. Install the tool: `dart pub global activate component_creator`
+2. Create your first component: `component_creator Button`
+3. Choose whether to create variants when prompted
+4. Use the generated component with or without variants as needed
+
+**New Features:**
+- **Interactive Variant Choice**: Users can choose whether to create variants for their components
+- **Conditional Variant Generation**: Components are generated with or without variants based on user choice
+- **Smart Default Variants**: When variants are chosen, default variants (primary, secondary, outline, ghost) are automatically included
+- **Flexible Template System**: Templates now support both variant and non-variant component generation
+- **Enhanced User Control**: More granular control over component generation process
+
+**Technical Improvements:**
+- **Interactive Prompts**: Added user prompts for variant creation choice
+- **Template Updates**: Updated `statefulWidget()` and `themeExtensionFileContent()` methods to support optional variants
+- **Method Signatures**: Enhanced method signatures to accept optional custom variants parameter
+- **Conditional Logic**: Added conditional logic for variant field and parameter generation
+- **Improved Code Structure**: Better organization of template generation with conditional sections
+
+**Breaking Changes:**
+- None (backward compatible)
+
+**Next Steps:**
+- Add StatelessWidget support
+- Implement custom templates
+- Add internationalization
+- Create interactive wizard
 
 ### Version 0.0.5 Release Notes
 
